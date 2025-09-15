@@ -7,27 +7,30 @@
 
 using namespace std;
 
-class Manager {
+class Manager
+{
 private:
 	MusicQueue q;
+	/*
 	ArtistBST ab;
 	TitleBST tb;
 	PlayList pl;
+	*/
 	ifstream fcmd;
 	ofstream flog;
+
 public:
 	Manager();
 	~Manager();
 
-	void run(const char* command);
+	void run(const char *command);
 
 	void LOAD();
-	void ADD();
+	void ADD(const string &line);
 	void QPOP();
 	void SEARCH();
 	void MAKEPL();
 	void PRINT();
 	void DELETE();
 	void EXIT();
-
 };
