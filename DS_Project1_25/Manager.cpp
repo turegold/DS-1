@@ -74,7 +74,7 @@ void Manager::run(const char *command)
         }
         else if (cmd == "PRINT")
         {
-            this->PRINT();
+            this->PRINT(line);
         }
         else if (cmd == "DELETE")
         {
@@ -182,6 +182,27 @@ void Manager::ADD(const string &line)
 
 void Manager::QPOP()
 {
+    // 1. 큐가 비어있는지 확인
+    if (q.empty())
+    {
+        flog << "QPOP\n";
+        flog << "Queue is empty\n";
+        return;
+    }
+
+    // 2. 큐에서 노드 꺼내기
+    MusicQueueNode *node = q.pop();
+
+    // 3. BST에 삽입
+    ab.insert(node);
+    tb.insert(node);
+
+    // 4. 로그 기록
+    flog << "QPOP\n";
+    flog << "Success\n";
+    flog << "===========\n";
+
+    delete node;
 }
 
 void Manager::SEARCH()
@@ -192,8 +213,42 @@ void Manager::MAKEPL()
 {
 }
 
-void Manager::PRINT()
+void Manager::PRINT(const string &line)
 {
+    stringstream ss(line);
+    string cmd, option;
+    ss >> cmd >> option;
+
+    if (option == "ARTIST")
+    {
+        flog << "PRINT ARTIST\n";
+        if (!ab.isEmpty())
+        {
+            ab.printTree(flog);
+        }
+        else
+        {
+            flog << "Artist BST is empty\n";
+        }
+    }
+    else if (option == "TITLE")
+    {
+        flog << "PRINT TITLE\n";
+        if (!tb.isEmpty())
+        {
+            tb.printTree(flog);
+        }
+        else
+        {
+            flog << "Title BST is empty\n";
+        }
+    }
+    else if (option == "LIST")
+    {
+        // 나중에 구현할 예정
+    }
+
+    flog << "===========\n";
 }
 
 void Manager::DELETE()

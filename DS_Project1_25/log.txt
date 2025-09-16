@@ -12,6 +12,9 @@ ADD
 ===========
 ===========
 ===QPOP===
+QPOP
+Success
+===========
 ===========
 ===SEARCH ARTIST N.Flying===
 ===========
@@ -32,10 +35,19 @@ ADD
 ===MAKEPL ARTIST PSY===
 ===========
 ===PRINT ARTIST===
+PRINT ARTIST
+N.Flying (1 songs)
+  └ blue moon | 3:36
+===========
 ===========
 ===PRINT TITLE===
+PRINT TITLE
+blue moon (1 songs)
+  └ N.Flying | 3:36
+===========
 ===========
 ===PRINT LIST===
+===========
 ===========
 ===DELETE ARTIST PSY===
 ===========
@@ -54,13 +66,26 @@ ADD
 ===DELETE SONG N.Flying|rooftop===
 ===========
 ===PRINT ARTIST===
+PRINT ARTIST
+N.Flying (1 songs)
+  └ blue moon | 3:36
+===========
 ===========
 ===DELETE SONG N.Flying|songbird===
 ===========
 ===PRINT ARTIST===
+PRINT ARTIST
+N.Flying (1 songs)
+  └ blue moon | 3:36
+===========
 ===========
 ===PRINT TITLE===
+PRINT TITLE
+blue moon (1 songs)
+  └ N.Flying | 3:36
+===========
 ===========
 ===PRINT LIST===
+===========
 ===========
 ===EXIT===

@@ -1,24 +1,34 @@
 #pragma once
 #include "TitleBST.h"
 #include "MusicQueueNode.h"
+#include <vector>
 
-class TitleBSTNode {
+class TitleBST;
+
+class TitleBSTNode
+{
+	friend class TitleBST;
+
 private:
 	string title;
 	vector<string> artist;
-	string run_time;
-	vector<int> rt;
+	vector<string> run_time;
 	int count;
-	TitleBSTNode* left;
-	TitleBSTNode* right;
+	TitleBSTNode *left;
+	TitleBSTNode *right;
+
 public:
-	TitleBSTNode() {}
-	~TitleBSTNode() {}
+	TitleBSTNode() = default;
 
-	void set() {
+	TitleBSTNode(const string &title, const string &artist, const string &run_time)
+		: title(title), artist{artist}, run_time{run_time}, count(1), left(nullptr), right(nullptr) {}
 
-	}
-	void search() {
-	
-	}
+	~TitleBSTNode() = default;
+
+	// void set()
+	// {
+	// }
+	// void search()
+	// {
+	// }
 };

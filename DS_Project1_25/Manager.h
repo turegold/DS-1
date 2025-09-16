@@ -11,10 +11,10 @@ class Manager
 {
 private:
 	MusicQueue q;
-	/*
 	ArtistBST ab;
 	TitleBST tb;
-	PlayList pl;
+	/*
+		PlayList pl;
 	*/
 	ifstream fcmd;
 	ofstream flog;
@@ -30,7 +30,7 @@ public:
 	void QPOP();
 	void SEARCH();
 	void MAKEPL();
-	void PRINT();
+	void PRINT(const string &line);
 	void DELETE();
 	void EXIT();
 };
