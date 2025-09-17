@@ -244,7 +244,7 @@ void Manager::SEARCH(const string &line)
     {
         string param;
         getline(ss, param);
-        param = param.substr(1); // 공백 제거
+        param = param.substr(1); // 공백제거
 
         size_t sep = param.find('|');
         if (sep == string::npos)
