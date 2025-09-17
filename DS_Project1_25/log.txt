@@ -17,12 +17,24 @@ Success
 ===========
 ===========
 ===SEARCH ARTIST N.Flying===
+========SEARCH========
+N.Flying (1 songs)
+  └ blue moon | 3:36
 ===========
 ===SEARCH TITLE blue moon===
+========SEARCH========
+blue moon (1 songs)
+  └ N.Flying | 3:36
 ===========
 ===SEARCH TITLE my love===
+========SEARCH========
+========ERROR========
+400
 ===========
 ===SEARCH SONG N.Flying|blue moon===
+========SEARCH========
+N.Flying
+  └ blue moon | 3:36
 ===========
 ===MAKEPL ARTIST N.Flying===
 ===========

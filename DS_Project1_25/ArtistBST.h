@@ -18,6 +18,8 @@ public:
 
 	void printTree(ofstream &flog);
 	bool isEmpty() const;
+	bool searchArtist(const string &artist, ofstream &flog);
+	bool searchSong(const string &artist, const string &title, ofstream &flog);
 	void insert(MusicQueueNode *node);
 	void search();
 	void print();

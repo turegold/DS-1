@@ -16,6 +16,7 @@ public:
 	TitleBST();
 	~TitleBST();
 
+	bool searchTitle(const string &titleName, ofstream &flog);
 	void printTree(ofstream &flog);
 	bool isEmpty() const;
 	void insert(MusicQueueNode *node);

@@ -119,3 +119,33 @@ void TitleBST::printTree(ofstream &flog)
 {
     printNode(root, flog);
 }
+
+bool TitleBST::searchTitle(const string &title, ofstream &flog)
+{
+    TitleBSTNode *cur = root;
+
+    while (cur)
+    {
+        // 찾았을 경우
+        if (title == cur->title)
+        {
+            flog << cur->title << " (" << cur->count << " songs)\n";
+            for (int i = 0; i < cur->count; i++)
+            {
+                flog << "  └ " << cur->artist[i] << " | " << cur->run_time[i] << '\n';
+            }
+            return true;
+        }
+        else if (title < cur->title)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // 못 찾은 경우
+    return false;
+}

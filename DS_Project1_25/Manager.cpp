@@ -66,7 +66,7 @@ void Manager::run(const char *command)
         }
         else if (cmd == "SEARCH")
         {
-            this->SEARCH();
+            this->SEARCH(line);
         }
         else if (cmd == "MAKEPL")
         {
@@ -88,6 +88,7 @@ void Manager::run(const char *command)
         else
         {
             flog << "Unkown command" << endl;
+            flog << "1000\n";
         }
 
         flog << "===========" << endl;
@@ -205,8 +206,70 @@ void Manager::QPOP()
     delete node;
 }
 
-void Manager::SEARCH()
+void Manager::SEARCH(const string &line)
 {
+    stringstream ss(line);
+    string cmd, option;
+    ss >> cmd >> option;
+
+    flog << "========SEARCH========\n";
+
+    if (option == "ARTIST")
+    {
+        string artist;
+        getline(ss, artist);       // 남은 부분 통째로
+        artist = artist.substr(1); // 앞의 공백 제거
+
+        bool found = ab.searchArtist(artist, flog);
+        if (!found)
+        {
+            flog << "========ERROR========\n";
+            flog << "400\n";
+        }
+    }
+    else if (option == "TITLE")
+    {
+        string title;
+        getline(ss, title);
+        title = title.substr(1);
+
+        bool found = tb.searchTitle(title, flog);
+        if (!found)
+        {
+            flog << "========ERROR========\n";
+            flog << "400\n";
+        }
+    }
+    else if (option == "SONG")
+    {
+        string param;
+        getline(ss, param);
+        param = param.substr(1); // 공백 제거
+
+        size_t sep = param.find('|');
+        if (sep == string::npos)
+        {
+            flog << "========ERROR========\n";
+            flog << "400\n";
+        }
+        else
+        {
+            string artist = param.substr(0, sep);
+            string title = param.substr(sep + 1);
+
+            bool found = ab.searchSong(artist, title, flog);
+            if (!found)
+            {
+                flog << "========ERROR========\n";
+                flog << "400\n";
+            }
+        }
+    }
+    else
+    {
+        flog << "========ERROR========\n";
+        flog << "400\n";
+    }
 }
 
 void Manager::MAKEPL()
