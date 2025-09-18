@@ -70,7 +70,7 @@ void Manager::run(const char *command)
         }
         else if (cmd == "MAKEPL")
         {
-            this->MAKEPL();
+            this->MAKEPL(line);
         }
         else if (cmd == "PRINT")
         {
@@ -272,8 +272,82 @@ void Manager::SEARCH(const string &line)
     }
 }
 
-void Manager::MAKEPL()
+void Manager::MAKEPL(const string &line)
 {
+    stringstream ss(line);
+    string cmd, option;
+    ss >> cmd >> option;
+
+    flog << "========MAKEPL========\n";
+
+    bool success = false;
+
+    if (option == "ARTIST")
+    {
+        string artist;
+        getline(ss, artist);
+        artist = artist.substr(1); // 공백 제거
+
+        success = ab.searchArtistToPlayList(artist, pl, flog);
+    }
+    else if (option == "TITLE")
+    {
+        string title;
+        getline(ss, title);
+        title = title.substr(1);
+
+        success = tb.searchTitleToPlayList(title, pl, flog);
+    }
+    else if (option == "SONG")
+    {
+        string param;
+        getline(ss, param);
+        param = param.substr(1);
+
+        size_t sep = param.find('|');
+        if (sep == string::npos)
+        {
+            flog << "========ERROR========\n";
+            flog << "500\n";
+            return;
+        }
+
+        string artist = param.substr(0, sep);
+        string title = param.substr(sep + 1);
+
+        success = ab.searchSongToPlayList(artist, title, pl, flog);
+    }
+    else
+    {
+        flog << "========ERROR========\n";
+        flog << "500\n";
+        return;
+    }
+
+    // 삽입 성공 여부 확인
+    if (!success)
+    {
+        flog << "========ERROR========\n";
+        flog << "500\n";
+        return;
+    }
+
+    // 삽입 성공
+    int total_sec = pl.run_time();
+    int minutes = total_sec / 60;
+    int seconds = total_sec % 60;
+
+    if (minutes < 10)
+    {
+        flog << '0';
+    }
+    flog << minutes << ':';
+
+    if (seconds < 10)
+    {
+        flog << '0';
+    }
+    flog << seconds << '\n';
 }
 
 void Manager::PRINT(const string &line)
@@ -292,6 +366,8 @@ void Manager::PRINT(const string &line)
         else
         {
             flog << "Artist BST is empty\n";
+            flog << "========ERROR========\n";
+            flog << "600\n";
         }
     }
     else if (option == "TITLE")
@@ -304,11 +380,24 @@ void Manager::PRINT(const string &line)
         else
         {
             flog << "Title BST is empty\n";
+            flog << "========ERROR========\n";
+            flog << "600\n";
         }
     }
     else if (option == "LIST")
     {
-        // 나중에 구현할 예정
+        flog << "PRINT LIST\n";
+
+        if (pl.empty())
+        {
+            flog << "PlayList is empty\n";
+            flog << "========ERROR========\n";
+            flog << "600\n";
+        }
+        else
+        {
+            flog << pl.print();
+        }
     }
 
     flog << "===========\n";

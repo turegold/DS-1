@@ -1,18 +1,21 @@
 #pragma once
 #include "PlayListNode.h"
+#include <string>
+using namespace std;
 
-class PlayList {
+class PlayList
+{
 private:
-	PlayListNode* head;
-	PlayListNode* cursor;
+	PlayListNode *head;
+	PlayListNode *cursor;
 	int count;
 	int time;
-	string data;
+	// string data;
 
 public:
-	PlayList() {}
-	~PlayList(){}
-	void insert_node();
+	PlayList();
+	~PlayList();
+	void insert_node(const string &artist, const string &title, int runtime_sec);
 	void delete_node();
 	bool empty();
 	bool full();

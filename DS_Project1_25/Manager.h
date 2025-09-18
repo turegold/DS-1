@@ -13,9 +13,7 @@ private:
 	MusicQueue q;
 	ArtistBST ab;
 	TitleBST tb;
-	/*
-		PlayList pl;
-	*/
+	PlayList pl;
 	ifstream fcmd;
 	ofstream flog;
 
@@ -29,7 +27,7 @@ public:
 	void ADD(const string &line);
 	void QPOP();
 	void SEARCH(const string &line);
-	void MAKEPL();
+	void MAKEPL(const string &line);
 	void PRINT(const string &line);
 	void DELETE();
 	void EXIT();

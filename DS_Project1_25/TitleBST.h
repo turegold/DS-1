@@ -1,6 +1,6 @@
 #pragma once
 #include "TitleBSTNode.h"
-
+#include "PlayList.h"
 class TitleBST
 {
 private:
@@ -17,6 +17,7 @@ public:
 	~TitleBST();
 
 	bool searchTitle(const string &titleName, ofstream &flog);
+	bool searchTitleToPlayList(const string &title, PlayList &pl, ofstream &flog);
 	void printTree(ofstream &flog);
 	bool isEmpty() const;
 	void insert(MusicQueueNode *node);

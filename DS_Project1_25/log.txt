@@ -37,14 +37,27 @@ N.Flying
   └ blue moon | 3:36
 ===========
 ===MAKEPL ARTIST N.Flying===
+========MAKEPL========
+03:36
 ===========
 ===MAKEPL TITLE blue moon===
+========MAKEPL========
+03:36
 ===========
 ===MAKEPL TITLE my love===
+========MAKEPL========
+========ERROR========
+500
 ===========
 ===MAKEPL SONG Maroon 5|sugar===
+========MAKEPL========
+========ERROR========
+500
 ===========
 ===MAKEPL ARTIST PSY===
+========MAKEPL========
+========ERROR========
+500
 ===========
 ===PRINT ARTIST===
 PRINT ARTIST
@@ -59,6 +72,10 @@ blue moon (1 songs)
 ===========
 ===========
 ===PRINT LIST===
+PRINT LIST
+N.Flying|blue moon|03:36
+노래 개수 : 1
+총 플레이타임 : 03:36
 ===========
 ===========
 ===DELETE ARTIST PSY===
@@ -98,6 +115,10 @@ blue moon (1 songs)
 ===========
 ===========
 ===PRINT LIST===
+PRINT LIST
+N.Flying|blue moon|03:36
+노래 개수 : 1
+총 플레이타임 : 03:36
 ===========
 ===========
 ===EXIT===

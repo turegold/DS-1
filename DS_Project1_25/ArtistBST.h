@@ -1,6 +1,6 @@
 #pragma once
 #include "ArtistBSTNode.h"
-
+#include "PlayList.h"
 class ArtistBST
 {
 private:
@@ -20,6 +20,8 @@ public:
 	bool isEmpty() const;
 	bool searchArtist(const string &artist, ofstream &flog);
 	bool searchSong(const string &artist, const string &title, ofstream &flog);
+	bool searchArtistToPlayList(const string &artist, PlayList &pl, ofstream &flog);
+	bool searchSongToPlayList(const string &artist, const string &title, PlayList &pl, ofstream &flog);
 	void insert(MusicQueueNode *node);
 	void search();
 	void print();

@@ -149,3 +149,41 @@ bool TitleBST::searchTitle(const string &title, ofstream &flog)
     // 못 찾은 경우
     return false;
 }
+
+bool TitleBST::searchTitleToPlayList(const string &title, PlayList &pl, ofstream &flog)
+{
+    TitleBSTNode *cur = root;
+
+    // BST 탐색
+    while (cur)
+    {
+        // 찾은 경우
+        if (title == cur->title)
+        {
+            for (int i = 0; i < cur->count; i++)
+            {
+                // 초 변환
+                string time_str = cur->run_time[i];
+                size_t colon = time_str.find(':');
+                int minutes = stoi(time_str.substr(0, colon));
+                int seconds = stoi(time_str.substr(colon + 1));
+                int runtime_sec = minutes * 60 + seconds;
+
+                // PlayList에 삽입
+                pl.insert_node(cur->artist[i], title, runtime_sec);
+            }
+            return true;
+        }
+        else if (title < cur->title)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // 못 찾은 경우
+    return false;
+}

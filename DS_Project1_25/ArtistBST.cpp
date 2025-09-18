@@ -1,4 +1,5 @@
 #include "ArtistBST.h"
+#include "ArtistBSTNode.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -184,5 +185,91 @@ bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &
     }
 
     // 아티스트 자체를 못 찾은 경우
+    return false;
+}
+
+bool ArtistBST::searchArtistToPlayList(const string &artist, PlayList &pl, ofstream &flog)
+{
+    ArtistBSTNode *cur = root;
+
+    // BST 탐색
+    while (cur)
+    {
+        // 아티스트를 찾은 경우
+        if (artist == cur->artist)
+        {
+
+            for (int i = 0; i < cur->count; i++)
+            {
+                // 러닝타임 문자열 -> 초로 변환
+                string time_str = cur->run_time[i];
+                size_t colon = time_str.find(':');
+                int minutes = stoi(time_str.substr(0, colon));
+                int seconds = stoi(time_str.substr(colon + 1));
+                int runtime_sec = minutes * 60 + seconds;
+
+                // PlayList에 삽입
+                pl.insert_node(artist, cur->title[i], runtime_sec);
+            }
+
+            return true;
+        }
+        else if (artist < cur->artist)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // 아티스트를 못 찾았을 경우
+    return false;
+}
+
+bool ArtistBST::searchSongToPlayList(const string &artist, const string &title, PlayList &pl, ofstream &flog)
+{
+    ArtistBSTNode *cur = root;
+
+    // BST 탐색
+    while (cur)
+    {
+        // artist를 찾았을 경우
+        if (artist == cur->artist)
+        {
+            // 찾은 artist에서 title 검색
+            for (int i = 0; i < cur->count; i++)
+            {
+                // 제목까지 찾았을 경우
+                if (cur->title[i] == title)
+                {
+                    // 러닝타임 문자열 -> 초로 변환
+                    string time_str = cur->run_time[i];
+                    size_t colon = time_str.find(':');
+                    int minutes = stoi(time_str.substr(0, colon));
+                    int seconds = stoi(time_str.substr(colon + 1));
+                    int runtime_sec = minutes * 60 + seconds;
+
+                    // PlayList에 삽입
+                    pl.insert_node(artist, title, runtime_sec);
+                    return true;
+                }
+            }
+
+            // artist는 맞지만 title이 없는 경우
+            return false;
+        }
+        else if (artist < cur->artist)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // artist 자체를 못 찾았을 경우
     return false;
 }
