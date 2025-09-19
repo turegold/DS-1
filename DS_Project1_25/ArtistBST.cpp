@@ -198,6 +198,11 @@ bool ArtistBST::searchArtistToPlayList(const string &artist, PlayList &pl, ofstr
         // 아티스트를 찾은 경우
         if (artist == cur->artist)
         {
+            // 곡 수 초과 체크
+            if (pl.size() + cur->count > 10)
+            {
+                return false;
+            }
 
             for (int i = 0; i < cur->count; i++)
             {
@@ -238,12 +243,20 @@ bool ArtistBST::searchSongToPlayList(const string &artist, const string &title, 
         // artist를 찾았을 경우
         if (artist == cur->artist)
         {
+
             // 찾은 artist에서 title 검색
             for (int i = 0; i < cur->count; i++)
             {
+
                 // 제목까지 찾았을 경우
                 if (cur->title[i] == title)
                 {
+                    // 곡 수 초과 체크
+                    if (pl.size() + 1 > 10)
+                    {
+                        return false;
+                    }
+
                     // 러닝타임 문자열 -> 초로 변환
                     string time_str = cur->run_time[i];
                     size_t colon = time_str.find(':');

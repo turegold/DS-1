@@ -160,6 +160,11 @@ bool TitleBST::searchTitleToPlayList(const string &title, PlayList &pl, ofstream
         // 찾은 경우
         if (title == cur->title)
         {
+            // 곡 수 초과 체크
+            if (pl.size() + cur->count > 10)
+            {
+                return false;
+            }
             for (int i = 0; i < cur->count; i++)
             {
                 // 초 변환

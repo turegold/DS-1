@@ -80,7 +80,10 @@ bool PlayList::empty()
 
 bool PlayList::full()
 {
-    return false;
+    if (count >= 10)
+    {
+        return false;
+    }
 }
 
 bool PlayList::exist()
@@ -130,4 +133,9 @@ int PlayList::run_time()
 {
     // 나중에 구현
     return time;
+}
+
+int PlayList::size() const
+{
+    return count;
 }

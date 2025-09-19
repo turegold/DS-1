@@ -22,4 +22,5 @@ public:
 	bool exist();
 	string print();
 	int run_time();
+	int size() const;
 };
