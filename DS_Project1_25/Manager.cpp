@@ -78,7 +78,7 @@ void Manager::run(const char *command)
         }
         else if (cmd == "DELETE")
         {
-            this->DELETE();
+            this->DELETE(line);
         }
         else if (cmd == "EXIT")
         {
@@ -403,8 +403,88 @@ void Manager::PRINT(const string &line)
     flog << "===========\n";
 }
 
-void Manager::DELETE()
+void Manager::DELETE(const string &line)
 {
+    stringstream ss(line);
+    string cmd, option;
+    ss >> cmd >> option;
+
+    flog << "========DELETE========\n";
+
+    bool success = false;
+
+    if (option == "ARTIST")
+    {
+        string artist;
+        getline(ss, artist);
+        artist = artist.substr(1); // 공백 제거
+
+        success = ab.deleteArtist(artist) & tb.deleteArtist(artist) & pl.deleteArtist(artist);
+    }
+    else if (option == "TITLE")
+    {
+        string title;
+        getline(ss, title);
+        title = title.substr(1);
+
+        success = ab.deleteTitle(title) & tb.deleteTitle(title) & pl.deleteTitle(title);
+    }
+    else if (option == "LIST")
+    {
+        string param;
+        getline(ss, param);
+        param = param.substr(1);
+
+        size_t sep = param.find('|');
+        if (sep == string::npos)
+        {
+            flog << "========ERROR========\n";
+            flog << "700\n";
+            return;
+        }
+
+        string artist = param.substr(0, sep);
+        string title = param.substr(sep + 1);
+
+        success = pl.deleteFromList(artist, title);
+    }
+    else if (option == "SONG")
+    {
+        string param;
+        getline(ss, param);
+        param = param.substr(1); // 공백 제거
+
+        size_t sep = param.find('|');
+        if (sep == string::npos)
+        {
+            flog << "========ERROR========\n";
+            flog << "700\n";
+            return;
+        }
+
+        string artist = param.substr(0, sep);
+        string title = param.substr(sep + 1);
+
+        success = ab.deleteSong(artist, title) & tb.deleteSong(artist, title) & pl.deleteFromList(artist, title);
+    }
+    else
+    {
+        flog << "========ERROR========\n";
+        flog << "700\n";
+        return;
+    }
+
+    // 성공하면 로그 출력
+    if (success)
+    {
+        flog << "Success\n";
+    }
+    else
+    {
+        flog << "========ERROR========\n";
+        flog << "700\n";
+    }
+    flog << "======================\n";
 }
 
 void Manager::EXIT()

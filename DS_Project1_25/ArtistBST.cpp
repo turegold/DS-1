@@ -286,3 +286,124 @@ bool ArtistBST::searchSongToPlayList(const string &artist, const string &title, 
     // artist 자체를 못 찾았을 경우
     return false;
 }
+
+bool ArtistBST::deleteArtist(const string &artist)
+{
+    ArtistBSTNode *cur = root;
+    ArtistBSTNode *parent = nullptr;
+
+    // 1. 삭제할 노드 탐색
+    while (cur && cur->artist != artist)
+    {
+        parent = cur;
+        if (artist < cur->artist)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // 2. 못 찾은 경우
+    if (!cur)
+    {
+        return false;
+    }
+
+    // 3. 삭제 로직
+    // case 1: 자식이 없을 경우
+    if (!cur->left && !cur->right)
+    {
+        if (cur == root)
+        {
+            root = nullptr;
+        }
+        else if (parent->left == cur)
+        {
+            parent->left = nullptr;
+        }
+        else
+        {
+            parent->right = nullptr;
+        }
+        delete cur;
+    }
+
+    // case 2-1: 자식이 왼쪽에만 있을 경우
+    else if (cur->left && !cur->right)
+    {
+        if (cur == root)
+        {
+            root = cur->left;
+        }
+        else if (parent->left == cur)
+        {
+            parent->left = cur->left;
+        }
+        else
+        {
+            parent->right = cur->left;
+        }
+        delete cur;
+    }
+
+    // case 2-2: 자식이 오른쪽에만 있을 경우
+    else if (!cur->left && cur->right)
+    {
+        if (cur == root)
+        {
+            root = cur->right;
+        }
+        else if (parent->left == cur)
+        {
+            parent->left = cur->right;
+        }
+        else
+        {
+            parent->right = cur->right;
+        }
+        delete cur;
+    }
+
+    // case 3: 자식이 왼쪽, 오른쪽에 모두 있을 경우
+    else
+    {
+        ArtistBSTNode *replacementParent = cur;
+        ArtistBSTNode *replacementNode = cur->right;
+        while (replacementNode->left)
+        {
+            replacementParent = replacementNode;
+            replacementNode = replacementNode->left;
+        }
+
+        // 현재 노드에 후계자의 데이터를 복사
+        cur->artist = replacementNode->artist;
+        cur->title = replacementNode->title;
+        cur->run_time = replacementNode->run_time;
+        cur->count = replacementNode->count;
+
+        // 후계자 삭제
+        if (replacementParent->left == replacementNode)
+        {
+            replacementParent->left = replacementNode->right;
+        }
+        /*
+        이런 경우
+         50
+           \
+            60
+              \
+               70
+        */
+        else
+        {
+            replacementParent->right = replacementNode->right;
+        }
+
+        delete replacementNode;
+    }
+
+    return true;
+}

@@ -19,6 +19,7 @@ public:
 	bool searchTitle(const string &titleName, ofstream &flog);
 	bool searchTitleToPlayList(const string &title, PlayList &pl, ofstream &flog);
 	void printTree(ofstream &flog);
+	bool deleteArtist(const string &artist);
 	bool isEmpty() const;
 	void insert(MusicQueueNode *node);
 	void search();

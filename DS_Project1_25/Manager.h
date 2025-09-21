@@ -29,6 +29,6 @@ public:
 	void SEARCH(const string &line);
 	void MAKEPL(const string &line);
 	void PRINT(const string &line);
-	void DELETE();
+	void DELETE(const string &line);
 	void EXIT();
 };

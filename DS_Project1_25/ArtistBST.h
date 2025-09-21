@@ -22,6 +22,7 @@ public:
 	bool searchSong(const string &artist, const string &title, ofstream &flog);
 	bool searchArtistToPlayList(const string &artist, PlayList &pl, ofstream &flog);
 	bool searchSongToPlayList(const string &artist, const string &title, PlayList &pl, ofstream &flog);
+	bool deleteArtist(const string &artist);
 	void insert(MusicQueueNode *node);
 	void search();
 	void print();

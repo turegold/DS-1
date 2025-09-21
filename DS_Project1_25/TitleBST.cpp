@@ -192,3 +192,139 @@ bool TitleBST::searchTitleToPlayList(const string &title, PlayList &pl, ofstream
     // 못 찾은 경우
     return false;
 }
+
+bool TitleBST::deleteArtist(const string &artist)
+{
+    TitleBSTNode *cur = root;
+    TitleBSTNode *parent = nullptr;
+
+    while (cur)
+    {
+        // artist가 존재하는지 확인
+        bool found = false;
+        for (int i = 0; i < cur->count; i++)
+        {
+            if (cur->artist[i] == artist)
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            // 1. 해당 artist에 해당하는 곡만 삭제
+            for (int i = 0; i < cur->count; i++)
+            {
+                if (cur->artist[i] == artist)
+                {
+                    cur->artist.erase(cur->artist.begin() + i);
+                    cur->run_time.erase(cur->run_time.begin() + i);
+                    cur->count--;
+                    i--;
+                }
+            }
+
+            // 2. 삭제 후 노드 내 곡이 하나도 없다면 노드 삭제
+            if (cur->count == 0)
+            {
+                // case 1: 리프 노드일 경우
+                if (!cur->left && !cur->right)
+                {
+                    if (cur == root)
+                    {
+                        root = nullptr;
+                    }
+                    else if (parent->left == cur)
+                    {
+                        parent->left = nullptr;
+                    }
+                    else
+                    {
+                        parent->right = nullptr;
+                    }
+                }
+
+                // case2: 왼쪽 자식만 있을 경우
+                else if (cur->left && !cur->right)
+                {
+                    if (cur == root)
+                    {
+                        root = cur->left;
+                    }
+                    else if (parent->left == cur)
+                    {
+                        parent->left = cur->left;
+                    }
+                    else
+                    {
+                        parent->right = cur->left;
+                    }
+                    delete cur;
+                }
+
+                // case 3: 오른쪽 자식만 있을 경우
+                else if (!cur->left && cur->right)
+                {
+                    if (cur == root)
+                    {
+                        root = cur->right;
+                    }
+                    else if (parent->left == cur)
+                    {
+                        parent->left = cur->right;
+                    }
+                    else
+                    {
+                        parent->right = cur->right;
+                    }
+                    delete cur;
+                }
+
+                // case 4: 양쪽 자신이 존재할 경우
+                else
+                {
+                    TitleBSTNode *replacementParent = cur;
+                    TitleBSTNode *replacementNode = cur->right;
+                    while (replacementNode->left)
+                    {
+                        replacementParent = replacementNode;
+                        replacementNode = replacementNode->left;
+                    }
+
+                    // 후계자 데이터 복사
+                    cur->title = replacementNode->title;
+                    cur->artist = replacementNode->artist;
+                    cur->run_time = replacementNode->run_time;
+                    cur->count = replacementNode->count;
+
+                    // 후계자 제거
+                    if (replacementParent->left == replacementNode)
+                    {
+                        replacementParent->left = replacementNode->right;
+                    }
+                    else
+                    {
+                        replacementParent->right = replacementNode->right;
+                    }
+                    delete replacementNode;
+                }
+            }
+
+            // 삭제 성공
+            return true;
+        }
+
+        // 다음 노드로 이동
+        parent = cur;
+        if (artist < cur->artist[0])
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+    return false;
+}
