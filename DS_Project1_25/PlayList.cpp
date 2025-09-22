@@ -233,3 +233,64 @@ bool PlayList::deleteArtist(const string &artist)
 
     return deleted;
 }
+
+bool PlayList::deleteTitle(const string &title)
+{
+    if (!head)
+    {
+        return false;
+    }
+
+    PlayListNode *cur = head;
+    bool deleted = false;
+
+    do
+    {
+        PlayListNode *nextNode = cur->next; // 순회 유지
+
+        if (cur->title == title)
+        {
+            // 노드가 하나뿐인 경우
+            if (cur->next == cur && cur->prev == cur)
+            {
+                delete cur;
+                head = nullptr;
+                cursor = nullptr;
+                count = 0;
+                time = 0;
+                return true;
+            }
+
+            // 연결 해제
+            cur->prev->next = cur->next;
+            cur->next->prev = cur->prev;
+
+            // head나 cursor가 삭제 대상일 경우
+            if (cur == head)
+            {
+                head = cur->next;
+            }
+            if (cur == cursor)
+            {
+                cursor = cur->next;
+            }
+
+            time -= cur->runtime_sec;
+            count--;
+
+            delete cur;
+            deleted = true;
+        }
+        cur = nextNode;
+
+    } while (cur != head && head);
+
+    // 마지막 노드가 삭제되어 리스트가 비어있는지 체크
+    if (count == 0)
+    {
+        head = nullptr;
+        cursor = nullptr;
+    }
+
+    return deleted;
+}

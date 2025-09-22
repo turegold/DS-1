@@ -21,6 +21,7 @@ public:
 	bool searchTitleToPlayList(const string &title, PlayList &pl, ofstream &flog);
 	void printTree(ofstream &flog);
 	bool deleteArtist(const string &artist);
+	bool deleteTitle(const string &title);
 	bool isEmpty() const;
 	void insert(MusicQueueNode *node);
 	void search();

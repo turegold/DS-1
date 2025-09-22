@@ -11,6 +11,7 @@ private:
 
 	void destroyTree(ArtistBSTNode *node);
 	void printNode(ArtistBSTNode *node, ofstream &flog);
+	ArtistBSTNode *deleteTitleRecursive(ArtistBSTNode *node, const string &title, bool &deleted);
 
 public:
 	ArtistBST();

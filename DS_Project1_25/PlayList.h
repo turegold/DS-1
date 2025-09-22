@@ -17,6 +17,7 @@ public:
 	void insert_node(const string &artist, const string &title, int runtime_sec);
 	void delete_node();
 	bool deleteArtist(const string &artist);
+	bool deleteTitle(const string &title);
 	bool empty();
 	bool full();
 	bool exist();

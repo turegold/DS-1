@@ -283,3 +283,120 @@ TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &
     }
     return node;
 }
+
+bool TitleBST::deleteTitle(const string &title)
+{
+    TitleBSTNode *cur = root;
+    TitleBSTNode *parent = nullptr;
+
+    // 1. 노드 탐색
+    while (cur && cur->title != title)
+    {
+        parent = cur;
+        if (title < cur->title)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // 2. 못 찾은 경우
+    if (!cur)
+    {
+        return false;
+    }
+
+    // 3. 삭제
+
+    // case1: 리프 노드일 경우
+    if (!cur->left && !cur->right)
+    {
+        // 루트 노드일 경우
+        if (cur == root)
+        {
+            root = nullptr;
+        }
+        // 삭제할 노드가 부모의 왼쪽일 경우
+        else if (parent->left == cur)
+        {
+            parent->left = nullptr;
+        }
+        // 삭제할 노드가 부모의 오른쪽일 경우
+        else
+        {
+            parent->right = nullptr;
+        }
+
+        delete cur;
+    }
+
+    // case 2: 왼쪽 자식만 존재할 경우
+    else if (cur->left && !cur->right)
+    {
+        // 루트 노드일 경우
+        if (cur == root)
+        {
+            root = cur->left;
+        }
+        // 삭제할 노드가 부모의 왼쪽일 경우
+        else if (parent->left == cur)
+        {
+            parent->left = cur->left;
+        }
+        // 삭제할 노드가 부모의 오른쪽일 경우
+        else
+        {
+            parent->right = cur->left;
+        }
+        delete cur;
+    }
+
+    // case 3: 오른쪽 자식만 존재할 경우
+    else if (!cur->left && cur->right)
+    {
+        if (cur == root)
+        {
+            root = cur->right;
+        }
+        else if (parent->left == cur)
+        {
+            parent->left = cur->right;
+        }
+        else
+        {
+            parent->right = cur->right;
+        }
+        delete cur;
+    }
+
+    // case 4: 양쪽 모두 존재할 경우
+    else
+    {
+        TitleBSTNode *replacementParent = cur;
+        TitleBSTNode *replacement = cur->right;
+        while (replacement->left)
+        {
+            replacementParent = replacement;
+            replacement = replacement->left;
+        }
+
+        // 복사
+        cur->title = replacement->title;
+        cur->artist = replacement->artist;
+        cur->run_time = replacement->run_time;
+        cur->count = replacement->count;
+
+        // 후계자 제거
+        if (replacementParent == cur)
+            replacementParent->right = replacement->right;
+        else
+            replacementParent->left = replacement->right;
+
+        delete replacement;
+    }
+
+    return true;
+}

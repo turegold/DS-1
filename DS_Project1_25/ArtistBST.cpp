@@ -407,3 +407,90 @@ bool ArtistBST::deleteArtist(const string &artist)
 
     return true;
 }
+
+ArtistBSTNode *ArtistBST::deleteTitleRecursive(ArtistBSTNode *node, const string &title, bool &deleted)
+{
+    if (!node)
+    {
+        return nullptr;
+    }
+
+    // 왼쪽 재귀
+    node->left = deleteTitleRecursive(node->left, title, deleted);
+
+    // 오른쪽 재귀
+    node->right = deleteTitleRecursive(node->right, title, deleted);
+
+    // 현재 노드에서 title 삭제
+    for (int i = 0; i < node->count; i++)
+    {
+        if (node->title[i] == title)
+        {
+            node->title.erase(node->title.begin() + i);
+            node->run_time.erase(node->run_time.begin() + i);
+            node->count--;
+            i--;
+            deleted = true;
+        }
+    }
+
+    // title을 삭제했는데 count가 0일 경우
+    if (node->count == 0)
+    {
+        // case1: 리프노드일 경우
+        if (!node->left && !node->right)
+        {
+            delete node;
+            return nullptr;
+        }
+        // case2: 왼쪽 자식만 있을 경우
+        else if (node->left && !node->right)
+        {
+            ArtistBSTNode *temp = node->left;
+            delete node;
+            return temp;
+        }
+        // case3: 오른쪽 자식만 있을 경우
+        else if (!node->left && node->right)
+        {
+            ArtistBSTNode *temp = node->right;
+            delete node;
+            return temp;
+        }
+
+        // case4: 양쪽 모두 있을 경우
+        else
+        {
+            ArtistBSTNode *replacementParent = node;
+            ArtistBSTNode *replacement = node->right;
+
+            while (replacement->left)
+            {
+                replacementParent = replacement;
+                replacement = replacement->left;
+            }
+
+            // 데이터 복사
+            node->artist = replacement->artist;
+            node->title = replacement->title;
+            node->run_time = replacement->run_time;
+            node->count = replacement->count;
+
+            // 후계자 삭제
+            if (replacementParent == node)
+                replacementParent->right = replacement->right;
+            else
+                replacementParent->left = replacement->right;
+            delete replacement;
+        }
+    }
+
+    return node;
+}
+
+bool ArtistBST::deleteTitle(const string &title)
+{
+    bool deleted = false;
+    root = deleteTitleRecursive(root, title, deleted);
+    return deleted;
+}
