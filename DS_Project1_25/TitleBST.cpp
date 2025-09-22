@@ -195,136 +195,91 @@ bool TitleBST::searchTitleToPlayList(const string &title, PlayList &pl, ofstream
 
 bool TitleBST::deleteArtist(const string &artist)
 {
-    TitleBSTNode *cur = root;
-    TitleBSTNode *parent = nullptr;
+    bool deleted = false;
+    root = deleteArtistRecursive(root, artist, deleted);
+    return deleted;
+}
 
-    while (cur)
+TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &artist, bool &deleted)
+{
+    if (!node)
     {
-        // artist가 존재하는지 확인
-        bool found = false;
-        for (int i = 0; i < cur->count; i++)
+        return nullptr;
+    }
+
+    // 왼쪽 서브트리 처리
+    node->left = deleteArtistRecursive(node->left, artist, deleted);
+
+    // 오른쪽 서브트리 처리
+    node->right = deleteArtistRecursive(node->right, artist, deleted);
+
+    // 현재 노드에서 artist 삭제
+    bool found = false;
+    for (int i = 0; i < node->count; i++)
+    {
+        if (node->artist[i] == artist)
         {
-            if (cur->artist[i] == artist)
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (found)
-        {
-            // 1. 해당 artist에 해당하는 곡만 삭제
-            for (int i = 0; i < cur->count; i++)
-            {
-                if (cur->artist[i] == artist)
-                {
-                    cur->artist.erase(cur->artist.begin() + i);
-                    cur->run_time.erase(cur->run_time.begin() + i);
-                    cur->count--;
-                    i--;
-                }
-            }
-
-            // 2. 삭제 후 노드 내 곡이 하나도 없다면 노드 삭제
-            if (cur->count == 0)
-            {
-                // case 1: 리프 노드일 경우
-                if (!cur->left && !cur->right)
-                {
-                    if (cur == root)
-                    {
-                        root = nullptr;
-                    }
-                    else if (parent->left == cur)
-                    {
-                        parent->left = nullptr;
-                    }
-                    else
-                    {
-                        parent->right = nullptr;
-                    }
-                }
-
-                // case2: 왼쪽 자식만 있을 경우
-                else if (cur->left && !cur->right)
-                {
-                    if (cur == root)
-                    {
-                        root = cur->left;
-                    }
-                    else if (parent->left == cur)
-                    {
-                        parent->left = cur->left;
-                    }
-                    else
-                    {
-                        parent->right = cur->left;
-                    }
-                    delete cur;
-                }
-
-                // case 3: 오른쪽 자식만 있을 경우
-                else if (!cur->left && cur->right)
-                {
-                    if (cur == root)
-                    {
-                        root = cur->right;
-                    }
-                    else if (parent->left == cur)
-                    {
-                        parent->left = cur->right;
-                    }
-                    else
-                    {
-                        parent->right = cur->right;
-                    }
-                    delete cur;
-                }
-
-                // case 4: 양쪽 자신이 존재할 경우
-                else
-                {
-                    TitleBSTNode *replacementParent = cur;
-                    TitleBSTNode *replacementNode = cur->right;
-                    while (replacementNode->left)
-                    {
-                        replacementParent = replacementNode;
-                        replacementNode = replacementNode->left;
-                    }
-
-                    // 후계자 데이터 복사
-                    cur->title = replacementNode->title;
-                    cur->artist = replacementNode->artist;
-                    cur->run_time = replacementNode->run_time;
-                    cur->count = replacementNode->count;
-
-                    // 후계자 제거
-                    if (replacementParent->left == replacementNode)
-                    {
-                        replacementParent->left = replacementNode->right;
-                    }
-                    else
-                    {
-                        replacementParent->right = replacementNode->right;
-                    }
-                    delete replacementNode;
-                }
-            }
-
-            // 삭제 성공
-            return true;
-        }
-
-        // 다음 노드로 이동
-        parent = cur;
-        if (artist < cur->artist[0])
-        {
-            cur = cur->left;
-        }
-        else
-        {
-            cur = cur->right;
+            node->artist.erase(node->artist.begin() + i);
+            node->run_time.erase(node->run_time.begin() + i);
+            node->count--;
+            i--;
+            found = true;
+            deleted = true;
         }
     }
-    return false;
+
+    // 삭제 후 노드가 비었으면 노드 자체를 삭제
+    if (node->count == 0)
+    {
+        // case1: 리프 노드일 경우
+        if (!node->left && !node->right)
+        {
+            delete node;
+            return nullptr;
+        }
+
+        // case2: 왼쪽만 있을 경우
+        if (node->left && !node->right)
+        {
+            TitleBSTNode *temp = node->left;
+            delete node;
+            return temp;
+        }
+
+        // case3: 오른쪽에만 있을 경우
+        if (!node->left && node->right)
+        {
+            TitleBSTNode *temp = node->right;
+            delete node;
+            return temp;
+        }
+
+        // case4: 양쪽에 모두 있을 경우
+        TitleBSTNode *replacementParent = node;
+        TitleBSTNode *replacement = node->right;
+
+        while (replacement->left)
+        {
+            replacementParent = replacement;
+            replacement = replacement->left;
+        }
+
+        // 후계자 정보 복사
+        node->title = replacement->title;
+        node->artist = replacement->artist;
+        node->run_time = replacement->run_time;
+        node->count = replacement->count;
+
+        // 후계자 노드 삭제
+
+        // 1. 지울 노드의 바로 오른쪽에 후계자가 있을 때
+        if (replacementParent == node)
+            replacementParent->right = replacement->right;
+
+        // 2. 깊숙한 곳에 후계자가 있을 때
+        else
+            replacementParent->left = replacement->right;
+        delete replacement;
+    }
+    return node;
 }
