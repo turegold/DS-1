@@ -19,13 +19,14 @@ public:
 
 	void printTree(ofstream &flog);
 	bool isEmpty() const;
-	bool searchArtist(const string &artist, ofstream &flog);
-	bool searchSong(const string &artist, const string &title, ofstream &flog);
+	bool searchArtist(const string &artist, ofstream &flog, bool is_print);
+	bool searchSong(const string &artist, const string &title, ofstream &flog, bool is_print);
 	bool searchArtistToPlayList(const string &artist, PlayList &pl, ofstream &flog);
 	bool searchSongToPlayList(const string &artist, const string &title, PlayList &pl, ofstream &flog);
 	bool deleteArtist(const string &artist);
 	bool deleteTitle(const string &title);
-	void insert(MusicQueueNode *node);
+	bool deleteSong(const string &artist, const string &title);
+	bool insert(MusicQueueNode *node);
 	void search();
 	void print();
 	void delete_node();

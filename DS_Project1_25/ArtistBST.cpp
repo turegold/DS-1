@@ -29,7 +29,7 @@ ArtistBST::~ArtistBST()
     destroyTree(root);
 }
 
-void ArtistBST::insert(MusicQueueNode *node)
+bool ArtistBST::insert(MusicQueueNode *node)
 {
     string artist = node->getArtist();
     string title = node->getTitle();
@@ -39,7 +39,7 @@ void ArtistBST::insert(MusicQueueNode *node)
     if (!root)
     {
         root = new ArtistBSTNode(artist, title, run_time);
-        return;
+        return true;
     }
 
     ArtistBSTNode *cur = root;
@@ -48,11 +48,20 @@ void ArtistBST::insert(MusicQueueNode *node)
     {
         if (artist == cur->getArtist())
         {
+            // 중복 곡 검사
+            for (int i = 0; i < cur->title.size(); i++)
+            {
+                if (cur->title[i] == title)
+                {
+                    return false;
+                }
+            }
+
             // 해당 아티스트가 이미 있는 경우: 노래 추가
             cur->title.push_back(title);
             cur->run_time.push_back(run_time);
             cur->count++;
-            return;
+            return true;
         }
         else if (artist < cur->getArtist())
         {
@@ -60,7 +69,7 @@ void ArtistBST::insert(MusicQueueNode *node)
             if (!cur->left)
             {
                 cur->left = new ArtistBSTNode(artist, title, run_time);
-                return;
+                return true;
             }
             cur = cur->left;
         }
@@ -70,7 +79,7 @@ void ArtistBST::insert(MusicQueueNode *node)
             if (!cur->right)
             {
                 cur->right = new ArtistBSTNode(artist, title, run_time);
-                return;
+                return true;
             }
             cur = cur->right;
         }
@@ -109,10 +118,9 @@ void ArtistBST::printNode(ArtistBSTNode *node, ofstream &flog)
     }
 
     printNode(node->left, flog);
-    flog << node->artist << " (" << node->count << " songs)\n";
     for (int i = 0; i < node->count; i++)
     {
-        flog << "  └ " << node->title[i] << " | " << node->run_time[i] << '\n';
+        flog << node->artist << "/" << node->title[i] << "/" << node->run_time[i] << '\n';
     }
 
     printNode(node->right, flog);
@@ -123,7 +131,7 @@ void ArtistBST::printTree(ofstream &flog)
     printNode(root, flog);
 }
 
-bool ArtistBST::searchArtist(const string &artist, ofstream &flog)
+bool ArtistBST::searchArtist(const string &artist, ofstream &flog, bool is_print)
 {
     ArtistBSTNode *cur = root;
 
@@ -132,10 +140,12 @@ bool ArtistBST::searchArtist(const string &artist, ofstream &flog)
         // 찾은 경우
         if (artist == cur->artist)
         {
-            flog << cur->artist << " (" << cur->count << " songs)\n";
-            for (int i = 0; i < cur->count; i++)
+            if (is_print)
             {
-                flog << "  └ " << cur->title[i] << " | " << cur->run_time[i] << '\n';
+                for (int i = 0; i < cur->count; i++)
+                {
+                    flog << cur->artist << "/" << cur->title[i] << "/" << cur->run_time[i] << "\n";
+                }
             }
             return true;
         }
@@ -152,7 +162,7 @@ bool ArtistBST::searchArtist(const string &artist, ofstream &flog)
     return false;
 }
 
-bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &flog)
+bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &flog, bool is_print)
 {
     ArtistBSTNode *cur = root;
 
@@ -166,8 +176,10 @@ bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &
                 // 제목 찾음
                 if (cur->title[i] == title)
                 {
-                    flog << cur->artist << '\n';
-                    flog << "  └ " << cur->title[i] << " | " << cur->run_time[i] << '\n';
+                    if (is_print)
+                    {
+                        flog << cur->artist << "/" << cur->title[i] << "/" << cur->run_time[i] << "\n";
+                    }
                     return true;
                 }
             }
@@ -190,6 +202,11 @@ bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &
 
 bool ArtistBST::searchArtistToPlayList(const string &artist, PlayList &pl, ofstream &flog)
 {
+    // 플레이리스트에 같은 가수가 있는지 확인
+    if (pl.is_existArtist(artist))
+    {
+        return false;
+    }
     ArtistBSTNode *cur = root;
 
     // BST 탐색
@@ -493,4 +510,49 @@ bool ArtistBST::deleteTitle(const string &title)
     bool deleted = false;
     root = deleteTitleRecursive(root, title, deleted);
     return deleted;
+}
+
+bool ArtistBST::deleteSong(const string &artist, const string &title)
+{
+    ArtistBSTNode *cur = root;
+    ArtistBSTNode *parent = nullptr;
+
+    // BST에서 가수 노드 탐색
+    while (cur && cur->artist != artist)
+    {
+        parent = cur;
+        if (artist < cur->artist)
+        {
+            cur = cur->left;
+        }
+        else
+        {
+            cur = cur->right;
+        }
+    }
+
+    // 가수를 못 찾은 경우
+    if (!cur)
+    {
+        return false;
+    }
+
+    // 해당 가수의 title에서 제목 찾아서 삭제
+    for (int i = 0; i < cur->count; i++)
+    {
+        if (cur->title[i] == title)
+        {
+            cur->title.erase(cur->title.begin() + i);
+            cur->run_time.erase(cur->run_time.begin() + i);
+            cur->count--;
+            // 노드가 비었으면 BST에서 artist 삭제
+            if (cur->count == 0)
+            {
+                deleteArtist(artist);
+            }
+            return true;
+        }
+    }
+    // 노래를 못 찾은 경우
+    return false;
 }

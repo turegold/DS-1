@@ -1,124 +1,216 @@
-===LOAD===
-Success
-===========
-===ADD KDA|pop stars|3:23===
-ADD
-Success
-===========
-===========
-===ADD N.Flying|songbird|3:46===
-ADD
-큐에 중복된 노래가 추가됨
-===========
-===========
-===QPOP===
-QPOP
-Success
-===========
-===========
-===SEARCH ARTIST N.Flying===
-========SEARCH========
-N.Flying (1 songs)
-  └ blue moon | 3:36
-===========
-===SEARCH TITLE blue moon===
-========SEARCH========
-blue moon (1 songs)
-  └ N.Flying | 3:36
-===========
-===SEARCH TITLE my love===
-========SEARCH========
+========LOAD========
+N.Flying/blue moon/3:36
+N.Flying/moonshot/3:26
+N.Flying/songbird/3:46
+N.Flying/rooftop/3:19
+N.Flying/oh really./3:10
+PSY/gangnam style/3:25
+PSY/gentleman/3:14
+PSY/daddy/3:32
+PSY/new face/3:16
+PSY/that that/3:05
+BTS/dynamite/3:19  
+IU/blueming/3:37
+Michael Jackson/beat it/4:18
+Maroon 5/sugar/3:55
+Westlife/my love/3:51
+Buzz/my love/4:05
+Hyorin/blue moon/3:24
+=======================
+========ADD========
+KDA/pop stars/3:23
+====================
 ========ERROR========
-400
-===========
-===SEARCH SONG N.Flying|blue moon===
+200
+======================
+========QPOP========
+Success
+====================
 ========SEARCH========
-N.Flying
-  └ blue moon | 3:36
-===========
-===MAKEPL ARTIST N.Flying===
+N.Flying/blue moon/3:36
+N.Flying/moonshot/3:26
+N.Flying/songbird/3:46
+N.Flying/rooftop/3:19
+N.Flying/oh really./3:10
+====================
+========SEARCH========
+N.Flying/blue moon/3:36
+Hyorin/blue moon/3:24
+====================
+========SEARCH========
+Westlife/my love/3:51
+Buzz/my love/4:05
+====================
+========SEARCH========
+N.Flying/blue moon/3:36
+====================
 ========MAKEPL========
-03:36
-===========
-===MAKEPL TITLE blue moon===
-========MAKEPL========
-03:36
-===========
-===MAKEPL TITLE my love===
-========MAKEPL========
+N.Flying/blue moon/03:36
+N.Flying/moonshot/03:26
+N.Flying/songbird/03:46
+N.Flying/rooftop/03:19
+N.Flying/oh really./03:10
+Count : 5 / 10
+Time : 17min 17sec
+====================
 ========ERROR========
 500
-===========
-===MAKEPL SONG Maroon 5|sugar===
+======================
 ========MAKEPL========
+N.Flying/blue moon/03:36
+N.Flying/moonshot/03:26
+N.Flying/songbird/03:46
+N.Flying/rooftop/03:19
+N.Flying/oh really./03:10
+Westlife/my love/03:51
+Buzz/my love/04:05
+Count : 7 / 10
+Time : 25min 13sec
+====================
+========MAKEPL========
+N.Flying/blue moon/03:36
+N.Flying/moonshot/03:26
+N.Flying/songbird/03:46
+N.Flying/rooftop/03:19
+N.Flying/oh really./03:10
+Westlife/my love/03:51
+Buzz/my love/04:05
+Maroon 5/sugar/03:55
+Count : 8 / 10
+Time : 29min 8sec
+====================
 ========ERROR========
 500
-===========
-===MAKEPL ARTIST PSY===
-========MAKEPL========
+======================
+========Print========
+ArtistBST
+BTS/dynamite/3:19  
+Buzz/my love/4:05
+Hyorin/blue moon/3:24
+IU/blueming/3:37
+KDA/pop stars/3:23
+Maroon 5/sugar/3:55
+Michael Jackson/beat it/4:18
+N.Flying/blue moon/3:36
+N.Flying/moonshot/3:26
+N.Flying/songbird/3:46
+N.Flying/rooftop/3:19
+N.Flying/oh really./3:10
+PSY/gangnam style/3:25
+PSY/gentleman/3:14
+PSY/daddy/3:32
+PSY/new face/3:16
+PSY/that that/3:05
+Westlife/my love/3:51
+====================
+========Print========
+TitleBST
+Michael Jackson/beat it/4:18
+N.Flying/blue moon/3:36
+Hyorin/blue moon/3:24
+IU/blueming/3:37
+PSY/daddy/3:32
+BTS/dynamite/3:19  
+PSY/gangnam style/3:25
+PSY/gentleman/3:14
+N.Flying/moonshot/3:26
+Westlife/my love/3:51
+Buzz/my love/4:05
+PSY/new face/3:16
+N.Flying/oh really./3:10
+KDA/pop stars/3:23
+N.Flying/rooftop/3:19
+N.Flying/songbird/3:46
+Maroon 5/sugar/3:55
+PSY/that that/3:05
+====================
+========Print========
+N.Flying/blue moon/03:36
+N.Flying/moonshot/03:26
+N.Flying/songbird/03:46
+N.Flying/rooftop/03:19
+N.Flying/oh really./03:10
+Westlife/my love/03:51
+Buzz/my love/04:05
+Maroon 5/sugar/03:55
+====================
+========DELETE========
 ========ERROR========
-500
-===========
-===PRINT ARTIST===
-PRINT ARTIST
-N.Flying (1 songs)
-  └ blue moon | 3:36
-===========
-===========
-===PRINT TITLE===
-PRINT TITLE
-blue moon (1 songs)
-  └ N.Flying | 3:36
-===========
-===========
-===PRINT LIST===
-PRINT LIST
-N.Flying|blue moon|03:36
-노래 개수 : 1
-총 플레이타임 : 03:36
-===========
-===========
-===DELETE ARTIST PSY===
-===========
-===DELETE ARTIST PSY===
-===========
-===DELETE TITLE blue moon===
-===========
-===DELETE TITLE blue moon===
-===========
-===DELETE LIST N.Flying|songbird===
-===========
-===DELETE LIST N.Flying|songbird===
-===========
-===DELETE SONG N.Flying|rooftop===
-===========
-===DELETE SONG N.Flying|rooftop===
-===========
-===PRINT ARTIST===
-PRINT ARTIST
-N.Flying (1 songs)
-  └ blue moon | 3:36
-===========
-===========
-===DELETE SONG N.Flying|songbird===
-===========
-===PRINT ARTIST===
-PRINT ARTIST
-N.Flying (1 songs)
-  └ blue moon | 3:36
-===========
-===========
-===PRINT TITLE===
-PRINT TITLE
-blue moon (1 songs)
-  └ N.Flying | 3:36
-===========
-===========
-===PRINT LIST===
-PRINT LIST
-N.Flying|blue moon|03:36
-노래 개수 : 1
-총 플레이타임 : 03:36
-===========
-===========
-===EXIT===
+700
+======================
+========DELETE========
+========ERROR========
+700
+======================
+========DELETE========
+Success
+======================
+========DELETE========
+========ERROR========
+700
+======================
+========DELETE========
+Success
+======================
+========DELETE========
+========ERROR========
+700
+======================
+========DELETE========
+Success
+======================
+========DELETE========
+========ERROR========
+700
+======================
+========Print========
+ArtistBST
+BTS/dynamite/3:19  
+Buzz/my love/4:05
+IU/blueming/3:37
+KDA/pop stars/3:23
+Maroon 5/sugar/3:55
+Michael Jackson/beat it/4:18
+N.Flying/moonshot/3:26
+N.Flying/songbird/3:46
+N.Flying/oh really./3:10
+Westlife/my love/3:51
+====================
+========DELETE========
+========ERROR========
+700
+======================
+========Print========
+ArtistBST
+BTS/dynamite/3:19  
+Buzz/my love/4:05
+IU/blueming/3:37
+KDA/pop stars/3:23
+Maroon 5/sugar/3:55
+Michael Jackson/beat it/4:18
+N.Flying/moonshot/3:26
+N.Flying/oh really./3:10
+Westlife/my love/3:51
+====================
+========Print========
+TitleBST
+Michael Jackson/beat it/4:18
+IU/blueming/3:37
+BTS/dynamite/3:19  
+N.Flying/moonshot/3:26
+Westlife/my love/3:51
+Buzz/my love/4:05
+N.Flying/oh really./3:10
+KDA/pop stars/3:23
+Maroon 5/sugar/3:55
+====================
+========Print========
+N.Flying/moonshot/03:26
+N.Flying/oh really./03:10
+Westlife/my love/03:51
+Buzz/my love/04:05
+Maroon 5/sugar/03:55
+====================
+========EXIT========
+Success
+====================

@@ -47,15 +47,5 @@ public:
 		return next;
 	}
 
-	friend class MusicQueue; // MusicQueue 클래스에서 MusicQueueNode의 private 멤버에 자유롭게 접근하기 위해
-
-	// 왜 있는 지 모르겠는 메서드??
-
-	// void insert()
-	// {
-	// }
-
-	// bool exist()
-	// {
-	// }
+	friend class MusicQueue;
 };

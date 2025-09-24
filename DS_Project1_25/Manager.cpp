@@ -41,11 +41,6 @@ void Manager::run(const char *command)
             continue;
         }
 
-        cout << "읽은 명령어: " << line << endl;
-
-        // 로그에 명령어 기록
-        flog << "===" << line << "===" << endl;
-
         // 명령어 이름 추출
         stringstream ss(line);
         string cmd;
@@ -87,11 +82,10 @@ void Manager::run(const char *command)
         }
         else
         {
-            flog << "Unkown command" << endl;
+            flog << "========ERROR========\n";
             flog << "1000\n";
+            flog << "======================\n";
         }
-
-        flog << "===========" << endl;
     }
 
     fcmd.close();
@@ -100,13 +94,26 @@ void Manager::run(const char *command)
 
 void Manager::LOAD()
 {
+    // 이미 큐에 데이터가 있는 경우
+    if (!q.empty())
+    {
+        flog << "========ERROR========\n";
+        flog << "100\n";
+        flog << "=======================\n";
+        return;
+    }
+
     // 음악 파일 열기
     ifstream fin("Music_List.txt");
     if (!fin.is_open())
     {
-        flog << "음악 파일 열기 실패!\n";
+        flog << "========ERROR========\n";
+        flog << "100\n";
+        flog << "=======================\n";
         return;
     }
+
+    flog << "========LOAD========\n";
 
     string line;
     while (getline(fin, line))
@@ -120,14 +127,12 @@ void Manager::LOAD()
 
         // 노드 생성
         MusicQueueNode *node = new MusicQueueNode(artist, title, time);
-
         // 큐에 삽입
         q.push(node);
-    }
-    flog << "Success\n";
 
-    // 큐에 담겨있는 노래 출력 -> 나중에 삭제 예정
-    q.printAll();
+        flog << artist << "/" << title << "/" << time << "\n";
+    }
+    flog << "=======================\n";
 
     fin.close();
 }
@@ -151,34 +156,35 @@ void Manager::ADD(const string &line)
     // 유효성 검사
     if (artist.empty() || title.empty() || time.empty())
     {
-        flog << "ADD\n";
-        flog << "유효성 검사 중 오류 발생\n";
-        flog << "===========\n";
+        flog << "========ERROR========\n";
+        flog << "200\n";
+        flog << "======================\n";
         return;
     }
 
-    // 중복 체크 (큐 내부에 동일한 데이터가 존재하는 지 확인)
-    MusicQueueNode *cur = q.front();
-    while (cur)
+    if (q.isFull())
     {
-        // 큐 내부에 이미 존재할 경우
-        if (cur->getArtist() == artist && cur->getTitle() == title && cur->getRunTime() == time)
-        {
-            flog << "ADD\n";
-            flog << "큐에 중복된 노래가 추가됨\n";
-            flog << "===========\n";
-            return;
-        }
-        cur = cur->getNext();
+        cerr << "Queue의 사이즈가 100을 초과하여 프로그램을 종료합니다.\n";
+        exit(1);
+    }
+
+    // 중복 체크 (큐 내부에 동일한 데이터가 존재하는 지 확인)
+    if (q.exist(artist, title, time))
+    {
+        flog << "========ERROR========\n";
+        flog << "200\n";
+        flog << "======================\n";
+        return;
     }
 
     // 큐에 삽입
     MusicQueueNode *newNode = new MusicQueueNode(artist, title, time);
     q.push(newNode);
 
-    flog << "ADD\n";
-    flog << "Success\n";
-    flog << "===========\n";
+    // 삽입 성공
+    flog << "========ADD========\n";
+    flog << artist << "/" << title << "/" << time << "\n";
+    flog << "====================\n";
 }
 
 void Manager::QPOP()
@@ -186,24 +192,42 @@ void Manager::QPOP()
     // 1. 큐가 비어있는지 확인
     if (q.empty())
     {
-        flog << "QPOP\n";
-        flog << "Queue is empty\n";
+        flog << "========ERROR========\n";
+        flog << "300\n";
+        flog << "======================\n";
         return;
     }
 
-    // 2. 큐에서 노드 꺼내기
-    MusicQueueNode *node = q.pop();
+    bool is_success = true;
 
-    // 3. BST에 삽입
-    ab.insert(node);
-    tb.insert(node);
+    // 큐에서 하나씩 꺼내서 ab, tb에 삽입
+    while (!q.empty())
+    {
+        MusicQueueNode *node = q.pop();
 
-    // 4. 로그 기록
-    flog << "QPOP\n";
-    flog << "Success\n";
-    flog << "===========\n";
+        bool insertToAB = ab.insert(node);
+        bool insertToTB = tb.insert(node);
 
-    delete node;
+        if (!insertToAB || !insertToTB)
+        {
+            is_success = false;
+        }
+
+        delete node;
+    }
+
+    if (is_success)
+    {
+        flog << "========QPOP========\n";
+        flog << "Success\n";
+        flog << "====================\n";
+    }
+    else
+    {
+        flog << "========ERROR========\n";
+        flog << "300\n";
+        flog << "======================\n";
+    }
 }
 
 void Manager::SEARCH(const string &line)
@@ -212,7 +236,14 @@ void Manager::SEARCH(const string &line)
     string cmd, option;
     ss >> cmd >> option;
 
-    flog << "========SEARCH========\n";
+    // 옵션 파싱 실패 시
+    if (option != "ARTIST" && option != "TITLE" && option != "SONG")
+    {
+        flog << "========ERROR========\n";
+        flog << "400\n";
+        flog << "======================\n";
+        return;
+    }
 
     if (option == "ARTIST")
     {
@@ -220,11 +251,17 @@ void Manager::SEARCH(const string &line)
         getline(ss, artist);       // 남은 부분 통째로
         artist = artist.substr(1); // 앞의 공백 제거
 
-        bool found = ab.searchArtist(artist, flog);
-        if (!found)
+        if (ab.searchArtist(artist, flog, false))
+        {
+            flog << "========SEARCH========\n";
+            ab.searchArtist(artist, flog, true);
+            flog << "====================\n";
+        }
+        else
         {
             flog << "========ERROR========\n";
             flog << "400\n";
+            flog << "======================\n";
         }
     }
     else if (option == "TITLE")
@@ -233,11 +270,17 @@ void Manager::SEARCH(const string &line)
         getline(ss, title);
         title = title.substr(1);
 
-        bool found = tb.searchTitle(title, flog);
-        if (!found)
+        if (tb.searchTitle(title, flog, false))
+        {
+            flog << "========SEARCH========\n";
+            tb.searchTitle(title, flog, true);
+            flog << "====================\n";
+        }
+        else
         {
             flog << "========ERROR========\n";
             flog << "400\n";
+            flog << "======================\n";
         }
     }
     else if (option == "SONG")
@@ -251,24 +294,25 @@ void Manager::SEARCH(const string &line)
         {
             flog << "========ERROR========\n";
             flog << "400\n";
+            flog << "======================\n";
+            return;
+        }
+
+        string artist = param.substr(0, sep);
+        string title = param.substr(sep + 1);
+
+        if (ab.searchSong(artist, title, flog, false))
+        {
+            flog << "========SEARCH========\n";
+            ab.searchSong(artist, title, flog, true);
+            flog << "====================\n";
         }
         else
         {
-            string artist = param.substr(0, sep);
-            string title = param.substr(sep + 1);
-
-            bool found = ab.searchSong(artist, title, flog);
-            if (!found)
-            {
-                flog << "========ERROR========\n";
-                flog << "400\n";
-            }
+            flog << "========ERROR========\n";
+            flog << "400\n";
+            flog << "======================\n";
         }
-    }
-    else
-    {
-        flog << "========ERROR========\n";
-        flog << "400\n";
     }
 }
 
@@ -278,7 +322,14 @@ void Manager::MAKEPL(const string &line)
     string cmd, option;
     ss >> cmd >> option;
 
-    flog << "========MAKEPL========\n";
+    // 옵션 유효성 확인
+    if (option != "ARTIST" && option != "TITLE" && option != "SONG")
+    {
+        flog << "========ERROR========\n";
+        flog << "500\n";
+        flog << "======================\n";
+        return;
+    }
 
     bool success = false;
 
@@ -309,6 +360,7 @@ void Manager::MAKEPL(const string &line)
         {
             flog << "========ERROR========\n";
             flog << "500\n";
+            flog << "======================\n";
             return;
         }
 
@@ -317,37 +369,31 @@ void Manager::MAKEPL(const string &line)
 
         success = ab.searchSongToPlayList(artist, title, pl, flog);
     }
-    else
-    {
-        flog << "========ERROR========\n";
-        flog << "500\n";
-        return;
-    }
 
     // 삽입 성공 여부 확인
     if (!success)
     {
         flog << "========ERROR========\n";
         flog << "500\n";
+        flog << "======================\n";
         return;
     }
+
+    flog << "========MAKEPL========\n";
+
+    // 플레이리스트 내용 출력
+    flog << pl.print();
+
+    // count 출력
+    flog << "Count : " << pl.size() << " / 10\n";
 
     // 삽입 성공
     int total_sec = pl.run_time();
     int minutes = total_sec / 60;
     int seconds = total_sec % 60;
 
-    if (minutes < 10)
-    {
-        flog << '0';
-    }
-    flog << minutes << ':';
-
-    if (seconds < 10)
-    {
-        flog << '0';
-    }
-    flog << seconds << '\n';
+    flog << "Time : " << minutes << "min " << seconds << "sec\n";
+    flog << "====================\n";
 }
 
 void Manager::PRINT(const string &line)
@@ -356,51 +402,48 @@ void Manager::PRINT(const string &line)
     string cmd, option;
     ss >> cmd >> option;
 
+    bool is_success = false;
+
     if (option == "ARTIST")
     {
-        flog << "PRINT ARTIST\n";
         if (!ab.isEmpty())
         {
+            flog << "========Print========\n";
+            flog << "ArtistBST\n";
             ab.printTree(flog);
-        }
-        else
-        {
-            flog << "Artist BST is empty\n";
-            flog << "========ERROR========\n";
-            flog << "600\n";
+            flog << "====================\n";
+            is_success = true;
         }
     }
     else if (option == "TITLE")
     {
-        flog << "PRINT TITLE\n";
         if (!tb.isEmpty())
         {
+            flog << "========Print========\n";
+            flog << "TitleBST\n";
             tb.printTree(flog);
-        }
-        else
-        {
-            flog << "Title BST is empty\n";
-            flog << "========ERROR========\n";
-            flog << "600\n";
+            flog << "====================\n";
+            is_success = true;
         }
     }
     else if (option == "LIST")
     {
-        flog << "PRINT LIST\n";
 
-        if (pl.empty())
+        if (!pl.empty())
         {
-            flog << "PlayList is empty\n";
-            flog << "========ERROR========\n";
-            flog << "600\n";
-        }
-        else
-        {
+            flog << "========Print========\n";
             flog << pl.print();
+            flog << "====================\n";
+            is_success = true;
         }
     }
 
-    flog << "===========\n";
+    if (!is_success)
+    {
+        flog << "========ERROR========\n";
+        flog << "600\n";
+        flog << "======================\n";
+    }
 }
 
 void Manager::DELETE(const string &line)
@@ -489,4 +532,7 @@ void Manager::DELETE(const string &line)
 
 void Manager::EXIT()
 {
+    flog << "========EXIT========\n";
+    flog << "Success\n";
+    flog << "====================\n";
 }

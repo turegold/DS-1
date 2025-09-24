@@ -28,14 +28,36 @@ bool MusicQueue::empty()
     }
 }
 
-bool MusicQueue::exist()
+bool MusicQueue::isFull()
 {
-    // 나중에 구현 예정
+    if (size >= 100)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool MusicQueue::exist(const string &artist, const string &title, const string &run_time)
+{
+    MusicQueueNode *cur = head;
+
+    while (cur)
+    {
+        if (cur->artist == artist && cur->title == title && cur->run_time == run_time)
+        {
+            return true;
+        }
+        cur = cur->next;
+    }
     return false;
 }
 
 void MusicQueue::push(MusicQueueNode *node)
 {
+
     // 큐가 비어있다면
     if (empty())
     {
@@ -55,7 +77,8 @@ MusicQueueNode *MusicQueue::pop()
 {
     if (empty())
     {
-        return nullptr;
+        std::cerr << "Queue가 비어있기 때문에 프로그램을 종료합니다.\n";
+        exit(1);
     }
 
     MusicQueueNode *cur_node = head;
@@ -81,15 +104,4 @@ MusicQueueNode *MusicQueue::front()
 {
     // 제일 앞에 있는 노드 리턴
     return head;
-}
-
-// 큐에 담겨있는 노래를 출력하는 메서드 -> 나중에 삭제할 예정
-void MusicQueue::printAll()
-{
-    MusicQueueNode *cur = head;
-    while (cur)
-    {
-        cout << cur->artist << " | " << cur->title << " | " << cur->run_time << endl;
-        cur = cur->next;
-    }
 }

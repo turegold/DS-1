@@ -18,6 +18,9 @@ public:
 	void delete_node();
 	bool deleteArtist(const string &artist);
 	bool deleteTitle(const string &title);
+	bool deleteFromList(const string &artist, const string &title);
+	bool is_existArtist(const string &artist);
+	bool is_existTitle(const string &title);
 	bool empty();
 	bool full();
 	bool exist();
