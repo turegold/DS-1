@@ -211,7 +211,8 @@ bool TitleBST::deleteArtist(const string &artist)
 {
     bool deleted = false;
     root = deleteArtistRecursive(root, artist, deleted);
-    return deleted;
+
+        return deleted;
 }
 
 TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &artist, bool &deleted)

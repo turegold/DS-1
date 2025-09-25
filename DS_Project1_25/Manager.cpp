@@ -433,6 +433,12 @@ void Manager::PRINT(const string &line)
         {
             flog << "========Print========\n";
             flog << pl.print();
+            flog << "Count : " << pl.size() << " / 10\n";
+
+            int total_sec = pl.run_time();
+            int minutes = total_sec / 60;
+            int seconds = total_sec % 60;
+            flog << "Time : " << minutes << "min " << seconds << "sec\n";
             flog << "====================\n";
             is_success = true;
         }
@@ -452,8 +458,6 @@ void Manager::DELETE(const string &line)
     string cmd, option;
     ss >> cmd >> option;
 
-    flog << "========DELETE========\n";
-
     bool success = false;
 
     if (option == "ARTIST")
@@ -462,7 +466,11 @@ void Manager::DELETE(const string &line)
         getline(ss, artist);
         artist = artist.substr(1); // 공백 제거
 
-        success = ab.deleteArtist(artist) & tb.deleteArtist(artist) & pl.deleteArtist(artist);
+        bool ab_deleted = ab.deleteArtist(artist);
+        bool tb_deleted = tb.deleteArtist(artist);
+        pl.deleteArtist(artist);
+
+        success = ab_deleted && tb_deleted;
     }
     else if (option == "TITLE")
     {
@@ -470,7 +478,11 @@ void Manager::DELETE(const string &line)
         getline(ss, title);
         title = title.substr(1);
 
-        success = ab.deleteTitle(title) & tb.deleteTitle(title) & pl.deleteTitle(title);
+        bool ab_deleted = ab.deleteTitle(title);
+        bool tb_deleted = tb.deleteTitle(title);
+        pl.deleteTitle(title);
+
+        success = ab_deleted && tb_deleted;
     }
     else if (option == "LIST")
     {
@@ -483,7 +495,7 @@ void Manager::DELETE(const string &line)
         {
             flog << "========ERROR========\n";
             flog << "700\n";
-            return;
+            flog << "======================\n";
         }
 
         string artist = param.substr(0, sep);
@@ -502,32 +514,40 @@ void Manager::DELETE(const string &line)
         {
             flog << "========ERROR========\n";
             flog << "700\n";
+            flog << "======================\n";
             return;
         }
 
         string artist = param.substr(0, sep);
         string title = param.substr(sep + 1);
 
-        success = ab.deleteSong(artist, title) & tb.deleteSong(artist, title) & pl.deleteFromList(artist, title);
+        bool ab_deleted = ab.deleteSong(artist, title);
+        bool tb_deleted = tb.deleteSong(artist, title);
+        pl.deleteFromList(artist, title);
+
+        success = ab_deleted && tb_deleted;
     }
     else
     {
         flog << "========ERROR========\n";
         flog << "700\n";
+        flog << "======================\n";
         return;
     }
 
     // 성공하면 로그 출력
     if (success)
     {
+        flog << "========DELETE========\n";
         flog << "Success\n";
+        flog << "======================\n";
     }
     else
     {
         flog << "========ERROR========\n";
         flog << "700\n";
+        flog << "======================\n";
     }
-    flog << "======================\n";
 }
 
 void Manager::EXIT()

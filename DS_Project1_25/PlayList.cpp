@@ -2,6 +2,7 @@
 #include "PlayListNode.h"
 #include <string>
 #include <sstream>
+#include <iostream>
 #include <iomanip>
 
 using namespace std;
@@ -157,6 +158,7 @@ bool PlayList::deleteArtist(const string &artist)
 {
     if (!head)
     {
+
         return false;
     }
 
@@ -169,6 +171,7 @@ bool PlayList::deleteArtist(const string &artist)
 
         if (cur->artist == artist)
         {
+
             // 노드가 1개 뿐인 경우
             if (cur->next == cur && cur->prev == cur)
             {
