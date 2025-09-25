@@ -1,5 +1,7 @@
 #include "MusicQueue.h"
 #include <iostream>
+
+// Constructor
 MusicQueue::MusicQueue()
 {
     head = nullptr;
@@ -7,6 +9,7 @@ MusicQueue::MusicQueue()
     size = 0;
 }
 
+// Destructor
 MusicQueue::~MusicQueue()
 {
     while (!empty())
@@ -16,6 +19,7 @@ MusicQueue::~MusicQueue()
     }
 }
 
+// Check if the queue is empty
 bool MusicQueue::empty()
 {
     if (size == 0)
@@ -28,6 +32,7 @@ bool MusicQueue::empty()
     }
 }
 
+// Check if the queue has reached the maximum size of 100
 bool MusicQueue::isFull()
 {
     if (size >= 100)
@@ -40,6 +45,7 @@ bool MusicQueue::isFull()
     }
 }
 
+// Check if a specific song already exists in the queue
 bool MusicQueue::exist(const string &artist, const string &title, const string &run_time)
 {
     MusicQueueNode *cur = head;
@@ -55,6 +61,7 @@ bool MusicQueue::exist(const string &artist, const string &title, const string &
     return false;
 }
 
+// Insert a node into the queue
 void MusicQueue::push(MusicQueueNode *node)
 {
 
@@ -73,35 +80,38 @@ void MusicQueue::push(MusicQueueNode *node)
     size++;
 }
 
+// Remove and return the front node
 MusicQueueNode *MusicQueue::pop()
 {
     if (empty())
     {
-        std::cerr << "Queue가 비어있기 때문에 프로그램을 종료합니다.\n";
+        std::cerr << "Queue is empty. Terminating program.\n";
         exit(1);
     }
 
     MusicQueueNode *cur_node = head;
 
+    // If only one node exists
     if (head == rear)
-    { // 노드가 1개뿐일 때
+    {
         head = nullptr;
         rear = nullptr;
     }
     else
-    { // head의 다음 노드를 head로 설정
+    {
         head = head->next;
         head->prev = nullptr;
     }
-    // pop될 노드의 연결 해제
+
+    // Detach the node to be returned
     cur_node->next = nullptr;
     cur_node->prev = nullptr;
     size--;
     return cur_node;
 }
 
+// Return the front node without removing it
 MusicQueueNode *MusicQueue::front()
 {
-    // 제일 앞에 있는 노드 리턴
     return head;
 }

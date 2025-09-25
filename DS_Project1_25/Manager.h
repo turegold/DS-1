@@ -22,7 +22,6 @@ public:
 	~Manager();
 
 	void run(const char *command);
-
 	void LOAD();
 	void ADD(const string &line);
 	void QPOP();

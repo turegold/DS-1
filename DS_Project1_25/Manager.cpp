@@ -16,37 +16,37 @@ Manager::~Manager()
 
 void Manager::run(const char *command)
 {
-    // 명령어 파일 열기
+    // Open command file
     fcmd.open(command);
     if (!fcmd.is_open())
     {
-        cout << "명령어 파일 열기 실패!\n";
+        cout << "Failed to open command file.\n";
         return;
     }
 
-    // 로그 파일 열기
+    // Open log file
     flog.open("log.txt");
     if (!flog.is_open())
     {
-        cout << "로그 파일 열기 실패!\n";
+        cout << "Failed to open log file.\n";
         return;
     }
 
     string line;
     while (getline(fcmd, line))
     {
-        // 공백 제거
+        // Skip empty lines
         if (line.empty())
         {
             continue;
         }
 
-        // 명령어 이름 추출
+        // Extract command
         stringstream ss(line);
         string cmd;
         ss >> cmd;
 
-        // 명령어 분기 처리
+        // Command dispatch
         if (cmd == "LOAD")
         {
             this->LOAD();
@@ -80,6 +80,7 @@ void Manager::run(const char *command)
             this->EXIT();
             break; // 종료
         }
+        // Invalid command error
         else
         {
             flog << "========ERROR========\n";
@@ -94,7 +95,7 @@ void Manager::run(const char *command)
 
 void Manager::LOAD()
 {
-    // 이미 큐에 데이터가 있는 경우
+    // If the queue is not empty, the LOAD command should fial.
     if (!q.empty())
     {
         flog << "========ERROR========\n";
@@ -103,8 +104,10 @@ void Manager::LOAD()
         return;
     }
 
-    // 음악 파일 열기
+    // Open the music list file
     ifstream fin("Music_List.txt");
+
+    // If the file can't be opened, log error code 100
     if (!fin.is_open())
     {
         flog << "========ERROR========\n";
@@ -121,15 +124,16 @@ void Manager::LOAD()
         stringstream ss(line);
         string artist, title, time;
 
+        // Music_List.txt format: artist|title|time
         getline(ss, artist, '|');
         getline(ss, title, '|');
         getline(ss, time);
 
-        // 노드 생성
+        // Create a new MusicQueueNode and push it to the queue
         MusicQueueNode *node = new MusicQueueNode(artist, title, time);
-        // 큐에 삽입
         q.push(node);
 
+        // Log the pushed song in the format artist/title/time
         flog << artist << "/" << title << "/" << time << "\n";
     }
     flog << "=======================\n";
@@ -141,19 +145,19 @@ void Manager::ADD(const string &line)
 {
     string artist, title, time;
 
-    // line에서 ADD 다음 파라미터만 추출
+    // parse artist|title|time
     size_t pos = line.find("ADD ");
-    // "ADD "를 찾은 경우에만 실행
+
     if (pos != string::npos)
     {
-        string trimmed = line.substr(pos + 4); // "ADD "가 4글자니까 시작 위치 + 4부터 끝까지 잘라냄
+        string trimmed = line.substr(pos + 4); // Skip "ADD "
         stringstream ss(trimmed);
         getline(ss, artist, '|');
         getline(ss, title, '|');
         getline(ss, time);
     }
 
-    // 유효성 검사
+    // Missing required fields
     if (artist.empty() || title.empty() || time.empty())
     {
         flog << "========ERROR========\n";
@@ -162,13 +166,14 @@ void Manager::ADD(const string &line)
         return;
     }
 
+    // Queue can hold up to 100 songs
     if (q.isFull())
     {
         cerr << "Queue의 사이즈가 100을 초과하여 프로그램을 종료합니다.\n";
         exit(1);
     }
 
-    // 중복 체크 (큐 내부에 동일한 데이터가 존재하는 지 확인)
+    // Duplicate song check in queue
     if (q.exist(artist, title, time))
     {
         flog << "========ERROR========\n";
@@ -177,11 +182,11 @@ void Manager::ADD(const string &line)
         return;
     }
 
-    // 큐에 삽입
+    // Push to queue
     MusicQueueNode *newNode = new MusicQueueNode(artist, title, time);
     q.push(newNode);
 
-    // 삽입 성공
+    // Log the successfully added song
     flog << "========ADD========\n";
     flog << artist << "/" << title << "/" << time << "\n";
     flog << "====================\n";
@@ -189,7 +194,7 @@ void Manager::ADD(const string &line)
 
 void Manager::QPOP()
 {
-    // 1. 큐가 비어있는지 확인
+    // If queue is empty, return error code 300
     if (q.empty())
     {
         flog << "========ERROR========\n";
@@ -200,14 +205,18 @@ void Manager::QPOP()
 
     bool is_success = true;
 
-    // 큐에서 하나씩 꺼내서 ab, tb에 삽입
+    // Pop songs from queue and insert into both BSTs
     while (!q.empty())
     {
+        // Dequeue one song
         MusicQueueNode *node = q.pop();
 
+        // Insert into ArtistBST
         bool insertToAB = ab.insert(node);
+        // Insert into TitleBST
         bool insertToTB = tb.insert(node);
 
+        // One of the inserts failed
         if (!insertToAB || !insertToTB)
         {
             is_success = false;
@@ -216,6 +225,7 @@ void Manager::QPOP()
         delete node;
     }
 
+    // Write result to log file
     if (is_success)
     {
         flog << "========QPOP========\n";
@@ -236,7 +246,7 @@ void Manager::SEARCH(const string &line)
     string cmd, option;
     ss >> cmd >> option;
 
-    // 옵션 파싱 실패 시
+    // Check if option is one of the valid types
     if (option != "ARTIST" && option != "TITLE" && option != "SONG")
     {
         flog << "========ERROR========\n";
@@ -245,15 +255,18 @@ void Manager::SEARCH(const string &line)
         return;
     }
 
+    // Case 1: SEARCH ARTIST
     if (option == "ARTIST")
     {
         string artist;
-        getline(ss, artist);       // 남은 부분 통째로
-        artist = artist.substr(1); // 앞의 공백 제거
+        getline(ss, artist);
+        artist = artist.substr(1);
 
+        // Only check existence
         if (ab.searchArtist(artist, flog, false))
         {
             flog << "========SEARCH========\n";
+            // Write to log
             ab.searchArtist(artist, flog, true);
             flog << "====================\n";
         }
@@ -264,15 +277,19 @@ void Manager::SEARCH(const string &line)
             flog << "======================\n";
         }
     }
+
+    // Case 2: SEARCH TITLE
     else if (option == "TITLE")
     {
         string title;
         getline(ss, title);
         title = title.substr(1);
 
+        // Only check existence
         if (tb.searchTitle(title, flog, false))
         {
             flog << "========SEARCH========\n";
+            // Write to log
             tb.searchTitle(title, flog, true);
             flog << "====================\n";
         }
@@ -283,12 +300,15 @@ void Manager::SEARCH(const string &line)
             flog << "======================\n";
         }
     }
+
+    // Case 3: SEARCH SONG
     else if (option == "SONG")
     {
         string param;
         getline(ss, param);
         param = param.substr(1); // 공백제거
 
+        // No delimiter found
         size_t sep = param.find('|');
         if (sep == string::npos)
         {
@@ -301,9 +321,11 @@ void Manager::SEARCH(const string &line)
         string artist = param.substr(0, sep);
         string title = param.substr(sep + 1);
 
+        // Only check existence
         if (ab.searchSong(artist, title, flog, false))
         {
             flog << "========SEARCH========\n";
+            // Write to log
             ab.searchSong(artist, title, flog, true);
             flog << "====================\n";
         }
@@ -322,7 +344,7 @@ void Manager::MAKEPL(const string &line)
     string cmd, option;
     ss >> cmd >> option;
 
-    // 옵션 유효성 확인
+    // Check if option is one of the valid types
     if (option != "ARTIST" && option != "TITLE" && option != "SONG")
     {
         flog << "========ERROR========\n";
@@ -333,20 +355,25 @@ void Manager::MAKEPL(const string &line)
 
     bool success = false;
 
+    // CASE 1: ARTIST
     if (option == "ARTIST")
     {
         string artist;
         getline(ss, artist);
-        artist = artist.substr(1); // 공백 제거
+        artist = artist.substr(1);
 
+        // Add all songs of the artist to the PlayList from ArtistBST
         success = ab.searchArtistToPlayList(artist, pl, flog);
     }
+
+    // CASE 2: TITLE
     else if (option == "TITLE")
     {
         string title;
         getline(ss, title);
         title = title.substr(1);
 
+        // Add all songs with matching title to the PlayList from TitleBST
         success = tb.searchTitleToPlayList(title, pl, flog);
     }
     else if (option == "SONG")
@@ -355,6 +382,7 @@ void Manager::MAKEPL(const string &line)
         getline(ss, param);
         param = param.substr(1);
 
+        // Parse artist|title format
         size_t sep = param.find('|');
         if (sep == string::npos)
         {
@@ -367,10 +395,11 @@ void Manager::MAKEPL(const string &line)
         string artist = param.substr(0, sep);
         string title = param.substr(sep + 1);
 
+        // Add a single song to the PlayList from ArtistBST
         success = ab.searchSongToPlayList(artist, title, pl, flog);
     }
 
-    // 삽입 성공 여부 확인
+    // If insertion failed
     if (!success)
     {
         flog << "========ERROR========\n";
@@ -379,19 +408,13 @@ void Manager::MAKEPL(const string &line)
         return;
     }
 
+    // If insertion success
     flog << "========MAKEPL========\n";
-
-    // 플레이리스트 내용 출력
     flog << pl.print();
-
-    // count 출력
     flog << "Count : " << pl.size() << " / 10\n";
-
-    // 삽입 성공
     int total_sec = pl.run_time();
     int minutes = total_sec / 60;
     int seconds = total_sec % 60;
-
     flog << "Time : " << minutes << "min " << seconds << "sec\n";
     flog << "====================\n";
 }
@@ -404,34 +427,41 @@ void Manager::PRINT(const string &line)
 
     bool is_success = false;
 
+    // Case 1: ARTIST
     if (option == "ARTIST")
     {
+        // Check if ArtistBST is not empty
         if (!ab.isEmpty())
         {
-            flog << "========Print========\n";
+            flog << "========PRINT========\n";
             flog << "ArtistBST\n";
             ab.printTree(flog);
             flog << "====================\n";
             is_success = true;
         }
     }
+
+    // Case 2: TITLE
     else if (option == "TITLE")
     {
+        // Check if TitleBST is not empty
         if (!tb.isEmpty())
         {
-            flog << "========Print========\n";
+            flog << "========PRINT========\n";
             flog << "TitleBST\n";
             tb.printTree(flog);
             flog << "====================\n";
             is_success = true;
         }
     }
+
+    // Case 3: LIST
     else if (option == "LIST")
     {
-
+        // Check if PlayList is not empty
         if (!pl.empty())
         {
-            flog << "========Print========\n";
+            flog << "========PRINT========\n";
             flog << pl.print();
             flog << "Count : " << pl.size() << " / 10\n";
 
@@ -444,6 +474,7 @@ void Manager::PRINT(const string &line)
         }
     }
 
+    // If none of the above options succeeded
     if (!is_success)
     {
         flog << "========ERROR========\n";
@@ -460,55 +491,50 @@ void Manager::DELETE(const string &line)
 
     bool success = false;
 
+    // Case 1: ARTIST
     if (option == "ARTIST")
     {
         string artist;
         getline(ss, artist);
-        artist = artist.substr(1); // 공백 제거
+        artist = artist.substr(1);
 
+        // Delete all data related to the artist from both BSTs
         bool ab_deleted = ab.deleteArtist(artist);
         bool tb_deleted = tb.deleteArtist(artist);
+
+        // Try deleting from PlayList as well
         pl.deleteArtist(artist);
 
+        // Consider successful only if both BST deletions succeeded
         success = ab_deleted && tb_deleted;
     }
+
+    // Case 2: TITLE
     else if (option == "TITLE")
     {
         string title;
         getline(ss, title);
         title = title.substr(1);
 
+        // Delete all songs with the given title from both BSTs
         bool ab_deleted = ab.deleteTitle(title);
         bool tb_deleted = tb.deleteTitle(title);
+
+        // Try deleting from PlayList as well
         pl.deleteTitle(title);
 
+        // Success only if both BST deletions succeeded
         success = ab_deleted && tb_deleted;
     }
+
+    // Case 3: LIST
     else if (option == "LIST")
     {
         string param;
         getline(ss, param);
         param = param.substr(1);
 
-        size_t sep = param.find('|');
-        if (sep == string::npos)
-        {
-            flog << "========ERROR========\n";
-            flog << "700\n";
-            flog << "======================\n";
-        }
-
-        string artist = param.substr(0, sep);
-        string title = param.substr(sep + 1);
-
-        success = pl.deleteFromList(artist, title);
-    }
-    else if (option == "SONG")
-    {
-        string param;
-        getline(ss, param);
-        param = param.substr(1); // 공백 제거
-
+        // Parse artist|title format
         size_t sep = param.find('|');
         if (sep == string::npos)
         {
@@ -521,10 +547,36 @@ void Manager::DELETE(const string &line)
         string artist = param.substr(0, sep);
         string title = param.substr(sep + 1);
 
+        // Only delete from PlayList
+        success = pl.deleteFromList(artist, title);
+    }
+
+    // Case 4: SONG
+    else if (option == "SONG")
+    {
+        string param;
+        getline(ss, param);
+        param = param.substr(1);
+
+        // Parse artist|title format
+        size_t sep = param.find('|');
+        if (sep == string::npos)
+        {
+            flog << "========ERROR========\n";
+            flog << "700\n";
+            flog << "======================\n";
+            return;
+        }
+
+        string artist = param.substr(0, sep);
+        string title = param.substr(sep + 1);
+
+        // Delete one specific song from both BSTs and PlayList
         bool ab_deleted = ab.deleteSong(artist, title);
         bool tb_deleted = tb.deleteSong(artist, title);
         pl.deleteFromList(artist, title);
 
+        // Success only if both BST deletions succeeded
         success = ab_deleted && tb_deleted;
     }
     else
@@ -535,7 +587,7 @@ void Manager::DELETE(const string &line)
         return;
     }
 
-    // 성공하면 로그 출력
+    // Output results
     if (success)
     {
         flog << "========DELETE========\n";
