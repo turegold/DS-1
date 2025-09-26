@@ -25,7 +25,7 @@ void Manager::run(const char *command)
     }
 
     // Open log file
-    flog.open("log.txt");
+    flog.open("log.txt", ios::app);
     if (!flog.is_open())
     {
         cout << "Failed to open log file.\n";
