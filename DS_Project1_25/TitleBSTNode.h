@@ -7,6 +7,7 @@ class TitleBST;
 
 class TitleBSTNode
 {
+	// Allow TitleBST class to access private members of TitleBSTNode
 	friend class TitleBST;
 
 private:
@@ -18,17 +19,13 @@ private:
 	TitleBSTNode *right;
 
 public:
+	// Default constructor
 	TitleBSTNode() = default;
 
+	// Constructor with initial song data
 	TitleBSTNode(const string &title, const string &artist, const string &run_time)
 		: title(title), artist{artist}, run_time{run_time}, count(1), left(nullptr), right(nullptr) {}
 
+	// Default destructor
 	~TitleBSTNode() = default;
-
-	// void set()
-	// {
-	// }
-	// void search()
-	// {
-	// }
 };

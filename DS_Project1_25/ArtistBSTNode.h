@@ -5,27 +5,33 @@
 
 using namespace std;
 
+// Forward declaration of ArtistBST to allow friendship
 class ArtistBST;
 
 class ArtistBSTNode
 {
+	// ArtistBST can access private members
 	friend class ArtistBST;
 
 private:
-	string artist;			 // 가수 이름
-	vector<string> title;	 // 노래 제목 리스트
-	vector<string> run_time; // 각 노래의 재생 시간
+	string artist;
+	vector<string> title;
+	vector<string> run_time;
 	int count = 0;
 	ArtistBSTNode *left = nullptr;
 	ArtistBSTNode *right = nullptr;
 
 public:
+	// Default constructor
 	ArtistBSTNode() = default;
 
+	// Constructor to create a node with initial song
 	ArtistBSTNode(const string &artist, const string &title, const string &run_time)
 		: artist(artist), title{title}, run_time{run_time}, count(1), left(nullptr), right(nullptr) {}
+	// Default destructor
 	~ArtistBSTNode() = default;
 
+	// Getters
 	const string &getArtist() const
 	{
 		return artist;
@@ -55,12 +61,4 @@ public:
 	{
 		return right;
 	}
-
-	// 왜 있는 건지 모르겠음
-	// void set()
-	// {
-	// }
-	// void search()
-	// {
-	// }
 };

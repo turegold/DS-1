@@ -3,11 +3,13 @@
 #include <fstream>
 using namespace std;
 
+// Constructor
 TitleBST::TitleBST()
 {
     root = nullptr;
 }
 
+// Helper to recursively delete all nodes
 void TitleBST::destroyTree(TitleBSTNode *node)
 {
     if (!node)
@@ -19,20 +21,21 @@ void TitleBST::destroyTree(TitleBSTNode *node)
     delete node;
 }
 
+// Destructor
 TitleBST::~TitleBST()
 {
-    // 재귀적으로 노드 삭제
     destroyTree(root);
 }
 
+// Insert a new MusicQueueNode
 bool TitleBST::insert(MusicQueueNode *node)
 {
-    // 1. 값 꺼내기
+    // Extract data from the incoming node
     string title = node->getTitle();
     string artist = node->getArtist();
     string run_time = node->getRunTime();
 
-    // 2. root가 비어있으면 새 노드 생성
+    // If the BST if empty, create the root node
     if (!root)
     {
         root = new TitleBSTNode(title, artist, run_time);
@@ -45,7 +48,7 @@ bool TitleBST::insert(MusicQueueNode *node)
     {
         if (title == cur->title)
         {
-            // 중복 가수 검사
+            // Check if this artist already has the same title
             for (int i = 0; i < cur->artist.size(); i++)
             {
                 if (cur->artist[i] == artist)
@@ -53,15 +56,15 @@ bool TitleBST::insert(MusicQueueNode *node)
                     return false;
                 }
             }
-            // 3. 같은 제목이면 해당 노드에 artist, run_time 추가
+            // If same title exists, append new artist and run_time
             cur->artist.push_back(artist);
             cur->run_time.push_back(run_time);
             cur->count++;
             return true;
         }
+        // If title is smaller
         else if (title < cur->title)
         {
-            // 4. 왼쪽으로 탐색
             if (!cur->left)
             {
                 cur->left = new TitleBSTNode(title, artist, run_time);
@@ -69,9 +72,9 @@ bool TitleBST::insert(MusicQueueNode *node)
             }
             cur = cur->left;
         }
+        // If title is larger
         else
         {
-            // 5. 오른쪽으로 탐색
             if (!cur->right)
             {
                 cur->right = new TitleBSTNode(title, artist, run_time);
@@ -82,6 +85,7 @@ bool TitleBST::insert(MusicQueueNode *node)
     }
 }
 
+// Helper to print all nodes in-order
 void TitleBST::printNode(TitleBSTNode *node, ofstream &flog)
 {
     if (!node)
@@ -98,18 +102,7 @@ void TitleBST::printNode(TitleBSTNode *node, ofstream &flog)
     printNode(node->right, flog);
 }
 
-void TitleBST::search()
-{
-}
-
-void TitleBST::print()
-{
-}
-
-void TitleBST::delete_node()
-{
-}
-
+// Check whether the tree is empty
 bool TitleBST::isEmpty() const
 {
     if (root == nullptr)
@@ -122,20 +115,23 @@ bool TitleBST::isEmpty() const
     }
 }
 
+// Print entire tree in-order
 void TitleBST::printTree(ofstream &flog)
 {
     printNode(root, flog);
 }
 
+// Search for a title in the BST and optionally print its data
 bool TitleBST::searchTitle(const string &title, ofstream &flog, bool is_print)
 {
     TitleBSTNode *cur = root;
 
+    // Traverse the BST to find the node with matching title
     while (cur)
     {
-        // 찾았을 경우
         if (title == cur->title)
         {
+            // If print is required
             if (is_print)
             {
                 for (int i = 0; i < cur->count; i++)
@@ -145,91 +141,98 @@ bool TitleBST::searchTitle(const string &title, ofstream &flog, bool is_print)
             }
             return true;
         }
+        // If title is smaller
         else if (title < cur->title)
         {
             cur = cur->left;
         }
+        // If title is larger
         else
         {
             cur = cur->right;
         }
     }
 
-    // 못 찾은 경우
+    // If not found
     return false;
 }
 
+// Search a title and add it to PlayList if found
 bool TitleBST::searchTitleToPlayList(const string &title, PlayList &pl, ofstream &flog)
 {
-    // 플레이리스트에 같은 제목이 있는지 확인
+    // Check if the title already exists in the playlist
     if (pl.is_existTitle(title))
     {
         return false;
     }
 
     TitleBSTNode *cur = root;
-    // BST 탐색
+    // Traverse the BST to find the node with matching title
     while (cur)
     {
-        // 찾은 경우
         if (title == cur->title)
         {
-            // 곡 수 초과 체크
+            // Check if adding all songs exceeds the playlist limit
             if (pl.size() + cur->count > 10)
             {
                 return false;
             }
+
+            // Insert each song into the playlist
             for (int i = 0; i < cur->count; i++)
             {
-                // 초 변환
+                // Convert runtime from "mm:ss" format to seconds
                 string time_str = cur->run_time[i];
                 size_t colon = time_str.find(':');
                 int minutes = stoi(time_str.substr(0, colon));
                 int seconds = stoi(time_str.substr(colon + 1));
                 int runtime_sec = minutes * 60 + seconds;
 
-                // PlayList에 삽입
+                // Add the song to the playlist
                 pl.insert_node(cur->artist[i], title, runtime_sec);
             }
             return true;
         }
+        // If title is smaller
         else if (title < cur->title)
         {
             cur = cur->left;
         }
+        // If title is larger
         else
         {
             cur = cur->right;
         }
     }
 
-    // 못 찾은 경우
+    // If not found
     return false;
 }
 
+// Delete all songs by a specific artist
 bool TitleBST::deleteArtist(const string &artist)
 {
     bool deleted = false;
     root = deleteArtistRecursive(root, artist, deleted);
 
-        return deleted;
+    return deleted;
 }
 
+// Helper to delete all songs by a specific artist
 TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &artist, bool &deleted)
 {
+    // If node not found
     if (!node)
     {
         return nullptr;
     }
 
-    // 왼쪽 서브트리 처리
+    // Recursively process left and right subtrees first
     node->left = deleteArtistRecursive(node->left, artist, deleted);
-
-    // 오른쪽 서브트리 처리
     node->right = deleteArtistRecursive(node->right, artist, deleted);
 
-    // 현재 노드에서 artist 삭제
     bool found = false;
+    // Search and remove all matching artist entries in current node
     for (int i = 0; i < node->count; i++)
     {
         if (node->artist[i] == artist)
@@ -243,17 +246,17 @@ TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &
         }
     }
 
-    // 삭제 후 노드가 비었으면 노드 자체를 삭제
+    // If all songs under this title were deleted, remove this node
     if (node->count == 0)
     {
-        // case1: 리프 노드일 경우
+        // case 1: No children
         if (!node->left && !node->right)
         {
             delete node;
             return nullptr;
         }
 
-        // case2: 왼쪽만 있을 경우
+        // case 2: Only left child
         if (node->left && !node->right)
         {
             TitleBSTNode *temp = node->left;
@@ -261,7 +264,7 @@ TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &
             return temp;
         }
 
-        // case3: 오른쪽에만 있을 경우
+        // case 3: Only left child
         if (!node->left && node->right)
         {
             TitleBSTNode *temp = node->right;
@@ -269,29 +272,27 @@ TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &
             return temp;
         }
 
-        // case4: 양쪽에 모두 있을 경우
+        // case 4: Two children
         TitleBSTNode *replacementParent = node;
         TitleBSTNode *replacement = node->right;
 
+        // Find leftmost node in right subtree
         while (replacement->left)
         {
             replacementParent = replacement;
             replacement = replacement->left;
         }
 
-        // 후계자 정보 복사
+        // Copy successor data into current node
         node->title = replacement->title;
         node->artist = replacement->artist;
         node->run_time = replacement->run_time;
         node->count = replacement->count;
 
-        // 후계자 노드 삭제
-
-        // 1. 지울 노드의 바로 오른쪽에 후계자가 있을 때
+        // Remove successor node
         if (replacementParent == node)
             replacementParent->right = replacement->right;
 
-        // 2. 깊숙한 곳에 후계자가 있을 때
         else
             replacementParent->left = replacement->right;
         delete replacement;
@@ -299,47 +300,45 @@ TitleBSTNode *TitleBST::deleteArtistRecursive(TitleBSTNode *node, const string &
     return node;
 }
 
+// Delete a specific title
 bool TitleBST::deleteTitle(const string &title)
 {
     TitleBSTNode *cur = root;
     TitleBSTNode *parent = nullptr;
 
-    // 1. 노드 탐색
+    // Search for the node with the given title
     while (cur && cur->title != title)
     {
         parent = cur;
+        // If title is smaller
         if (title < cur->title)
         {
             cur = cur->left;
         }
+        // If title is larger
         else
         {
             cur = cur->right;
         }
     }
 
-    // 2. 못 찾은 경우
+    // If title not found
     if (!cur)
     {
         return false;
     }
 
-    // 3. 삭제
-
-    // case1: 리프 노드일 경우
+    // case 1: Node has no children
     if (!cur->left && !cur->right)
     {
-        // 루트 노드일 경우
         if (cur == root)
         {
             root = nullptr;
         }
-        // 삭제할 노드가 부모의 왼쪽일 경우
         else if (parent->left == cur)
         {
             parent->left = nullptr;
         }
-        // 삭제할 노드가 부모의 오른쪽일 경우
         else
         {
             parent->right = nullptr;
@@ -348,20 +347,18 @@ bool TitleBST::deleteTitle(const string &title)
         delete cur;
     }
 
-    // case 2: 왼쪽 자식만 존재할 경우
+    // case 2: Node has only left child
     else if (cur->left && !cur->right)
     {
-        // 루트 노드일 경우
         if (cur == root)
         {
             root = cur->left;
         }
-        // 삭제할 노드가 부모의 왼쪽일 경우
+
         else if (parent->left == cur)
         {
             parent->left = cur->left;
         }
-        // 삭제할 노드가 부모의 오른쪽일 경우
         else
         {
             parent->right = cur->left;
@@ -369,7 +366,7 @@ bool TitleBST::deleteTitle(const string &title)
         delete cur;
     }
 
-    // case 3: 오른쪽 자식만 존재할 경우
+    // case 3: Node has only right child
     else if (!cur->left && cur->right)
     {
         if (cur == root)
@@ -387,9 +384,10 @@ bool TitleBST::deleteTitle(const string &title)
         delete cur;
     }
 
-    // case 4: 양쪽 모두 존재할 경우
+    // case 4: Node has two children
     else
     {
+        // Find inorder successor
         TitleBSTNode *replacementParent = cur;
         TitleBSTNode *replacement = cur->right;
         while (replacement->left)
@@ -398,13 +396,13 @@ bool TitleBST::deleteTitle(const string &title)
             replacement = replacement->left;
         }
 
-        // 복사
+        // Copy replacement node data into current node
         cur->title = replacement->title;
         cur->artist = replacement->artist;
         cur->run_time = replacement->run_time;
         cur->count = replacement->count;
 
-        // 후계자 제거
+        // Remove the successor node
         if (replacementParent == cur)
             replacementParent->right = replacement->right;
         else
@@ -416,11 +414,12 @@ bool TitleBST::deleteTitle(const string &title)
     return true;
 }
 
+// Delete a specific song
 bool TitleBST::deleteSong(const string &artist, const string &title)
 {
     TitleBSTNode *cur = root;
 
-    // 제목 노드 탐색
+    // Search for the node that matches the given title
     while (cur && cur->title != title)
     {
         if (title < cur->title)
@@ -433,13 +432,13 @@ bool TitleBST::deleteSong(const string &artist, const string &title)
         }
     }
 
-    // 못 찾은 경우
+    // If title node not found
     if (!cur)
     {
         return false;
     }
 
-    // 해당 아티스트의 노래 삭제
+    // Search for the artist in the song list and delete it
     for (int i = 0; i < cur->count; i++)
     {
         if (cur->artist[i] == artist)
@@ -448,7 +447,7 @@ bool TitleBST::deleteSong(const string &artist, const string &title)
             cur->run_time.erase(cur->run_time.begin() + i);
             cur->count--;
 
-            // 노드가 비어있다면 노드 삭제
+            // If no songs remain, delete the entire title node
             if (cur->count == 0)
             {
                 deleteTitle(title);
@@ -458,6 +457,6 @@ bool TitleBST::deleteSong(const string &artist, const string &title)
         }
     }
 
-    // 아티스트를 못 찾은 경우
+    // If artist not found
     return false;
 }
