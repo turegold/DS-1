@@ -1,4 +1,6 @@
 #include "TitleBST.h"
+#include "TitleBSTNode.h"
+#include "PlayList.h"
 #include <iostream>
 #include <fstream>
 using namespace std;

@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "PlayList.h"
 using namespace std;
 
 // Forward declaration of PlayList class to allow PlayListNode to reference it

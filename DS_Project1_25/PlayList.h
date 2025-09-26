@@ -1,7 +1,8 @@
 #pragma once
-#include "PlayListNode.h"
 #include <string>
 using namespace std;
+
+class PlayListNode;
 
 class PlayList
 {

@@ -1,6 +1,9 @@
 #pragma once
-#include "TitleBSTNode.h"
-#include "PlayList.h"
+
+class TitleBSTNode;
+class PlayList;
+class MusicQueueNode;
+
 class TitleBST
 {
 private:
