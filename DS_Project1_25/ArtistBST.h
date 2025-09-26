@@ -3,6 +3,9 @@
 #include <fstream>
 #include "ArtistBSTNode.h"
 #include "PlayList.h"
+
+using namespace std;
+
 class ArtistBST
 {
 private:

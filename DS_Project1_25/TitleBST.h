@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <fstream>
+
+using namespace std;
+
 class TitleBSTNode;
 class PlayList;
 class MusicQueueNode;
