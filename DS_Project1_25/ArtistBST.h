@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+#include <fstream>
 #include "ArtistBSTNode.h"
 #include "PlayList.h"
 class ArtistBST
