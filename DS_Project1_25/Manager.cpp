@@ -447,7 +447,7 @@ void Manager::PRINT(const string &line)
         // Check if TitleBST is not empty
         if (!tb.isEmpty())
         {
-            flog << "========PRINT========\n";
+            flog << "========Print========\n";
             flog << "TitleBST\n";
             tb.printTree(flog);
             flog << "====================\n";
@@ -461,7 +461,7 @@ void Manager::PRINT(const string &line)
         // Check if PlayList is not empty
         if (!pl.empty())
         {
-            flog << "========PRINT========\n";
+            flog << "========Print========\n";
             flog << pl.print();
             flog << "Count : " << pl.size() << " / 10\n";
 

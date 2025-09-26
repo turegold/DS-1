@@ -137,8 +137,7 @@ string PlayList::print()
         int ss_sec = rt % 60;
 
         ss << cur->getArtist() << "/" << cur->getTitle() << "/";
-        ss << setfill('0') << setw(2) << mm << ":"
-           << setfill('0') << setw(2) << ss_sec << "\n";
+        ss << mm << ":" << setfill('0') << setw(2) << ss_sec << "\n";
 
         cur = cur->next;
     } while (cur != head);
