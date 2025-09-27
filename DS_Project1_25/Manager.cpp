@@ -427,6 +427,15 @@ void Manager::PRINT(const string &line)
 
     bool is_success = false;
 
+    // Check if option is one of the valid types
+    if (option != "ARTIST" && option != "TITLE" && option != "LIST")
+    {
+        flog << "========ERROR========\n";
+        flog << "500\n";
+        flog << "======================\n";
+        return;
+    }
+
     // Case 1: ARTIST
     if (option == "ARTIST")
     {
@@ -447,7 +456,7 @@ void Manager::PRINT(const string &line)
         // Check if TitleBST is not empty
         if (!tb.isEmpty())
         {
-            flog << "========Print========\n";
+            flog << "========PRINT========\n";
             flog << "TitleBST\n";
             tb.printTree(flog);
             flog << "====================\n";
@@ -461,7 +470,7 @@ void Manager::PRINT(const string &line)
         // Check if PlayList is not empty
         if (!pl.empty())
         {
-            flog << "========Print========\n";
+            flog << "========PRINT========\n";
             flog << pl.print();
             flog << "Count : " << pl.size() << " / 10\n";
 
@@ -490,6 +499,15 @@ void Manager::DELETE(const string &line)
     ss >> cmd >> option;
 
     bool success = false;
+
+    // Check if option is one of the valid types
+    if (option != "ARTIST" && option != "TITLE" && option != "LIST" && option != "SONG")
+    {
+        flog << "========ERROR========\n";
+        flog << "700\n";
+        flog << "======================\n";
+        return;
+    }
 
     // Case 1: ARTIST
     if (option == "ARTIST")
