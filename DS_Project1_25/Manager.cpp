@@ -169,8 +169,10 @@ void Manager::ADD(const string &line)
     // Queue can hold up to 100 songs
     if (q.isFull())
     {
-        cerr << "Queue size is over. Program exit\n";
-        exit(1);
+        flog << "========ERROR========\n";
+        flog << "200\n";
+        flog << "======================\n";
+        return;
     }
 
     // Duplicate song check in queue

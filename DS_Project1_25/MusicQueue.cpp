@@ -84,8 +84,7 @@ MusicQueueNode *MusicQueue::pop()
 {
     if (empty())
     {
-        std::cerr << "Queue is empty. Terminating program.\n";
-        exit(1);
+        return nullptr;
     }
 
     MusicQueueNode *cur_node = head;
