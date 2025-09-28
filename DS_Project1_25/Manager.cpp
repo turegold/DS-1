@@ -78,7 +78,7 @@ void Manager::run(const char *command)
         else if (cmd == "EXIT")
         {
             this->EXIT();
-            break; // 종료
+            break;
         }
         // Invalid command error
         else
@@ -169,7 +169,7 @@ void Manager::ADD(const string &line)
     // Queue can hold up to 100 songs
     if (q.isFull())
     {
-        cerr << "Queue의 사이즈가 100을 초과하여 프로그램을 종료합니다.\n";
+        cerr << "Queue size is over. Program exit\n";
         exit(1);
     }
 
@@ -306,7 +306,7 @@ void Manager::SEARCH(const string &line)
     {
         string param;
         getline(ss, param);
-        param = param.substr(1); // 공백제거
+        param = param.substr(1);
 
         // No delimiter found
         size_t sep = param.find('|');

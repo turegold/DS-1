@@ -65,7 +65,6 @@ bool MusicQueue::exist(const string &artist, const string &title, const string &
 void MusicQueue::push(MusicQueueNode *node)
 {
 
-    // 큐가 비어있다면
     if (empty())
     {
         head = node;
