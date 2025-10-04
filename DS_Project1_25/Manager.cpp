@@ -95,7 +95,7 @@ void Manager::run(const char *command)
 
 void Manager::LOAD()
 {
-    cout << "LOAD 실행\n";
+
     // If the queue is not empty, the LOAD command should fial.
     if (!q.empty())
     {
@@ -144,7 +144,7 @@ void Manager::LOAD()
 
 void Manager::ADD(const string &line)
 {
-    cout << "ADD 실행\n";
+
     string artist, title, time;
 
     // parse artist|title|time
@@ -198,7 +198,6 @@ void Manager::ADD(const string &line)
 
 void Manager::QPOP()
 {
-    cout << "QPOP 실행\n";
     // If queue is empty, return error code 300
     if (q.empty())
     {
@@ -249,7 +248,6 @@ void Manager::QPOP()
 
 void Manager::SEARCH(const string &line)
 {
-    cout << "SEARCH 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -270,7 +268,6 @@ void Manager::SEARCH(const string &line)
         getline(ss, artist);
         artist = artist.substr(1);
 
-        cout << "artist: " << artist << '\n';
         // Only check existence
         if (ab.searchArtist(artist, flog, false))
         {
@@ -295,8 +292,6 @@ void Manager::SEARCH(const string &line)
         string title;
         getline(ss, title);
         title = title.substr(1);
-
-        cout << "title: " << title << '\n';
 
         // Only check existence
         if (tb.searchTitle(title, flog, false))
@@ -336,9 +331,6 @@ void Manager::SEARCH(const string &line)
         string artist = param.substr(0, sep);
         string title = param.substr(sep + 1);
 
-        cout << "artist: " << artist << '\n';
-        cout << "title: " << title << '\n';
-
         // Only check existence
         if (ab.searchSong(artist, title, flog, false))
         {
@@ -360,7 +352,6 @@ void Manager::SEARCH(const string &line)
 
 void Manager::MAKEPL(const string &line)
 {
-    cout << "MAKEPL 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -444,7 +435,6 @@ void Manager::MAKEPL(const string &line)
 
 void Manager::PRINT(const string &line)
 {
-    cout << "PRINT 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -519,7 +509,6 @@ void Manager::PRINT(const string &line)
 
 void Manager::DELETE(const string &line)
 {
-    cout << "DELETE 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -650,7 +639,6 @@ void Manager::DELETE(const string &line)
 
 void Manager::EXIT()
 {
-    cout << "EXIT 실행\n";
     flog << "========EXIT========\n";
     flog << "Success\n";
     flog << "====================\n";
