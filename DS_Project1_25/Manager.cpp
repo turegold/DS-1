@@ -270,6 +270,7 @@ void Manager::SEARCH(const string &line)
         getline(ss, artist);
         artist = artist.substr(1);
 
+        cout << "artist: " << artist << '\n';
         // Only check existence
         if (ab.searchArtist(artist, flog, false))
         {
@@ -294,6 +295,8 @@ void Manager::SEARCH(const string &line)
         string title;
         getline(ss, title);
         title = title.substr(1);
+
+        cout << "title: " << title << '\n';
 
         // Only check existence
         if (tb.searchTitle(title, flog, false))
@@ -332,6 +335,9 @@ void Manager::SEARCH(const string &line)
 
         string artist = param.substr(0, sep);
         string title = param.substr(sep + 1);
+
+        cout << "artist: " << artist << '\n';
+        cout << "title: " << title << '\n';
 
         // Only check existence
         if (ab.searchSong(artist, title, flog, false))
