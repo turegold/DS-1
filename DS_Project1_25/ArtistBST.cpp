@@ -275,6 +275,10 @@ bool ArtistBST::searchSongToPlayList(const string &artist, const string &title, 
             {
                 if (cur->title[i] == title)
                 {
+                    if (pl.exist(artist, title))
+                    {
+                        return false;
+                    }
                     // Check if adding one song exceeds the playlist size limit
                     if (pl.size() + 1 > 10)
                     {

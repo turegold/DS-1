@@ -35,7 +35,7 @@ public:
 	// Returns true if the playlist is full
 	bool full();
 	// Check existence of any node
-	bool exist();
+	bool exist(const string &artist, const string &title);
 	// Returns the formatted string of the playlist for logging
 	string print();
 	// Returns total runtime of the playlist

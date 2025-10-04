@@ -107,16 +107,24 @@ bool PlayList::full()
 }
 
 // Check existence of any node
-bool PlayList::exist()
+bool PlayList::exist(const string &artist, const string &title)
 {
-    if (cursor != nullptr)
-    {
-        return true;
-    }
-    else
+    if (!head)
     {
         return false;
     }
+
+    PlayListNode *cur = head;
+    do
+    {
+        if (cur->artist == artist && cur->title == title)
+        {
+            return true;
+        }
+        cur = cur->next;
+    } while (cur != head);
+
+    return false;
 }
 
 // Returns the formatted string of the playlist for logging
