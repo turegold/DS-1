@@ -144,6 +144,7 @@ void Manager::LOAD()
 
 void Manager::ADD(const string &line)
 {
+    cout << "ADD 실행\n";
     string artist, title, time;
 
     // parse artist|title|time
