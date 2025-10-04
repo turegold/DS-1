@@ -185,6 +185,9 @@ bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &
                     return true;
                 }
             }
+
+            // If title not matched
+            return false;
         }
         // If artist name is smaller
         else if (artist < cur->artist)
