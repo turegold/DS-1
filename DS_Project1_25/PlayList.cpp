@@ -230,9 +230,10 @@ bool PlayList::deleteTitle(const string &title)
     }
 
     PlayListNode *cur = head;
+    int originalCount = count;
     bool deleted = false;
 
-    do
+    for (int i = 0; i < originalCount && cur; ++i)
     {
         PlayListNode *nextNode = cur->next;
 
@@ -241,11 +242,11 @@ bool PlayList::deleteTitle(const string &title)
             // Only one node in the list
             if (cur->next == cur && cur->prev == cur)
             {
+                time -= cur->runtime_sec;
+                count--;
                 delete cur;
                 head = nullptr;
                 cursor = nullptr;
-                count = 0;
-                time = 0;
                 return true;
             }
 
@@ -254,23 +255,18 @@ bool PlayList::deleteTitle(const string &title)
             cur->next->prev = cur->prev;
 
             if (cur == head)
-            {
                 head = cur->next;
-            }
             if (cur == cursor)
-            {
                 cursor = cur->next;
-            }
 
             time -= cur->runtime_sec;
             count--;
-
             delete cur;
             deleted = true;
         }
-        cur = nextNode;
 
-    } while (cur != head);
+        cur = nextNode;
+    }
 
     if (count == 0)
     {
