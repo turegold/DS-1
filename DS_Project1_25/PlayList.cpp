@@ -174,38 +174,34 @@ bool PlayList::deleteArtist(const string &artist)
     }
 
     PlayListNode *cur = head;
+    int originalCount = count;
     bool deleted = false;
 
-    do
+    for (int i = 0; i < originalCount && cur; i++)
     {
         PlayListNode *nextNode = cur->next;
 
         if (cur->artist == artist)
         {
-
             // Only one node in the list
             if (cur->next == cur && cur->prev == cur)
             {
+                time -= cur->runtime_sec;
+                count--;
                 delete cur;
                 head = nullptr;
                 cursor = nullptr;
-                count = 0;
-                time = 0;
                 return true;
             }
 
-            // Remove current node from the list
+            // Remove node from list
             cur->prev->next = cur->next;
             cur->next->prev = cur->prev;
 
             if (cur == head)
-            {
                 head = cur->next;
-            }
             if (cur == cursor)
-            {
                 cursor = cur->next;
-            }
 
             time -= cur->runtime_sec;
             count--;
@@ -214,7 +210,7 @@ bool PlayList::deleteArtist(const string &artist)
             deleted = true;
         }
         cur = nextNode;
-    } while (cur != head);
+    }
 
     if (count == 0)
     {
