@@ -181,6 +181,7 @@ bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &
                     {
                         flog << cur->artist << "/" << cur->title[i] << "/" << cur->run_time[i] << "\n";
                     }
+                    cout << "SEARCH 성공\n";
                     return true;
                 }
             }
@@ -197,6 +198,7 @@ bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &
         }
     }
 
+    cout << "SEARCH 실패\n";
     // Artist not found
     return false;
 }

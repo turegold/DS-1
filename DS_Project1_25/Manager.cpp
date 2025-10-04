@@ -648,4 +648,5 @@ void Manager::EXIT()
     flog << "========EXIT========\n";
     flog << "Success\n";
     flog << "====================\n";
+    return;
 }
