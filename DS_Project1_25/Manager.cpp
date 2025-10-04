@@ -236,12 +236,14 @@ void Manager::QPOP()
         flog << "========QPOP========\n";
         flog << "Success\n";
         flog << "====================\n";
+        return;
     }
     else
     {
         flog << "========ERROR========\n";
         flog << "300\n";
         flog << "======================\n";
+        return;
     }
 }
 
@@ -275,12 +277,14 @@ void Manager::SEARCH(const string &line)
             // Write to log
             ab.searchArtist(artist, flog, true);
             flog << "====================\n";
+            return;
         }
         else
         {
             flog << "========ERROR========\n";
             flog << "400\n";
             flog << "======================\n";
+            return;
         }
     }
 
@@ -298,12 +302,14 @@ void Manager::SEARCH(const string &line)
             // Write to log
             tb.searchTitle(title, flog, true);
             flog << "====================\n";
+            return;
         }
         else
         {
             flog << "========ERROR========\n";
             flog << "400\n";
             flog << "======================\n";
+            return;
         }
     }
 
@@ -334,12 +340,14 @@ void Manager::SEARCH(const string &line)
             // Write to log
             ab.searchSong(artist, title, flog, true);
             flog << "====================\n";
+            return;
         }
         else
         {
             flog << "========ERROR========\n";
             flog << "400\n";
             flog << "======================\n";
+            return;
         }
     }
 }
@@ -425,6 +433,7 @@ void Manager::MAKEPL(const string &line)
     int seconds = total_sec % 60;
     flog << "Time : " << minutes << "min " << seconds << "sec\n";
     flog << "====================\n";
+    return;
 }
 
 void Manager::PRINT(const string &line)
@@ -498,6 +507,7 @@ void Manager::PRINT(const string &line)
         flog << "========ERROR========\n";
         flog << "600\n";
         flog << "======================\n";
+        return;
     }
 }
 
@@ -621,12 +631,14 @@ void Manager::DELETE(const string &line)
         flog << "========DELETE========\n";
         flog << "Success\n";
         flog << "======================\n";
+        return;
     }
     else
     {
         flog << "========ERROR========\n";
         flog << "700\n";
         flog << "======================\n";
+        return;
     }
 }
 
