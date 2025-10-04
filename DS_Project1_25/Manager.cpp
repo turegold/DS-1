@@ -95,6 +95,7 @@ void Manager::run(const char *command)
 
 void Manager::LOAD()
 {
+    cout << "LOAD 실행\n";
     // If the queue is not empty, the LOAD command should fial.
     if (!q.empty())
     {
@@ -196,6 +197,7 @@ void Manager::ADD(const string &line)
 
 void Manager::QPOP()
 {
+    cout << "QPOP 실행\n";
     // If queue is empty, return error code 300
     if (q.empty())
     {
@@ -244,6 +246,7 @@ void Manager::QPOP()
 
 void Manager::SEARCH(const string &line)
 {
+    cout << "SEARCH 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -342,6 +345,7 @@ void Manager::SEARCH(const string &line)
 
 void Manager::MAKEPL(const string &line)
 {
+    cout << "MAKEPL 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -378,6 +382,7 @@ void Manager::MAKEPL(const string &line)
         // Add all songs with matching title to the PlayList from TitleBST
         success = tb.searchTitleToPlayList(title, pl, flog);
     }
+    // CASE 3: SONG
     else if (option == "SONG")
     {
         string param;
@@ -423,6 +428,7 @@ void Manager::MAKEPL(const string &line)
 
 void Manager::PRINT(const string &line)
 {
+    cout << "PRINT 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -496,6 +502,7 @@ void Manager::PRINT(const string &line)
 
 void Manager::DELETE(const string &line)
 {
+    cout << "DELETE 실행\n";
     stringstream ss(line);
     string cmd, option;
     ss >> cmd >> option;
@@ -624,6 +631,7 @@ void Manager::DELETE(const string &line)
 
 void Manager::EXIT()
 {
+    cout << "EXIT 실행\n";
     flog << "========EXIT========\n";
     flog << "Success\n";
     flog << "====================\n";
