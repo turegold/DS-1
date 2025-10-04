@@ -164,7 +164,7 @@ bool ArtistBST::searchArtist(const string &artist, ofstream &flog, bool is_print
 bool ArtistBST::searchSong(const string &artist, const string &title, ofstream &flog, bool is_print)
 {
     ArtistBSTNode *cur = root;
-
+    cout << "searchSong 접근\n";
     // Traverse the BST to find the artist node
     while (cur)
     {
